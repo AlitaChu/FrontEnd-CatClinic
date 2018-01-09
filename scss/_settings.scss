@@ -76,7 +76,7 @@ $foundation-palette: (
   alert: #dd073a /*#cc4b37*/,
 );
 $light-gray: #e6e6e6;
-$medium-gray: #e6e6e6;
+$medium-gray: #aaa;
 $dark-gray: #444;
 $black: #0a0a0a;
 $white: #fefefe;
@@ -169,7 +169,7 @@ $code-padding: rem-calc(2 5 1);
 $anchor-color: $primary-color;
 $anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
 $anchor-text-decoration: none;
-$anchor-text-decoration-hover: none;
+$anchor-text-decoration-hover: underline;
 $hr-width: $global-width;
 $hr-border: 1px solid $medium-gray;
 $hr-margin: rem-calc(20) auto;
@@ -311,8 +311,8 @@ $buttongroup-radius-on-each: true;
 // 13. Callout
 // -----------
 
-$callout-background: $black;
-$callout-background-fade: 20%;
+$callout-background: rgba(0,0,0,0.9);
+$callout-background-fade: 10%;
 $callout-border: 1px solid rgba($black, 0.25);
 $callout-margin: 0 0 1rem 0;
 $callout-padding: 1rem;
@@ -394,7 +394,7 @@ $dropdownmenu-submenu-background: $dropdownmenu-background;
 $dropdownmenu-padding: $global-menu-padding;
 $dropdownmenu-nested-margin: 0;
 $dropdownmenu-submenu-padding: $dropdownmenu-padding;
-$dropdownmenu-border: 1px solid $medium-gray;
+$dropdownmenu-border: 1px solid $light-gray;
 $dropdown-menu-item-color-active: get-color(primary);
 $dropdown-menu-item-background-active: transparent;
 
@@ -840,10 +840,10 @@ $tooltip-radius: $global-radius;
 // -----------
 
 $topbar-padding: 1rem 0.5rem;
-$topbar-background: $medium-gray; /*$light-gray*/
+$topbar-background: $light-gray; /*$light-gray*/
 $topbar-submenu-background: $topbar-background;
 $topbar-title-spacing: 0.5rem 1rem 0.5rem 0;
-$topbar-input-width: 200px;
+$topbar-input-width: 150px;
 $topbar-unstack-breakpoint: medium;
 
 // 56. Xy Grid
