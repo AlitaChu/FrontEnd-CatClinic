@@ -61,11 +61,16 @@ function specialites() {
     
     global $content;
     
-    $id = 1; // a remplacer par $_GET['idcat']
+    $id = 1; // a remplacer par $_GET['idcat'] ou array
     
     $marticle = new MArticle();
-    $data = $marticle-> SelectAll($id);
+    $data = $marticle-> SelectAllResume($id);
     array_walk($data, 'strip_xss');
+    
+    //test du Select()
+    //$marticle = new MArticle(2);
+    //$data = $marticle-> Select();
+    //array_walk($data, 'strip_xss');
     
     //debug($data); 
     
@@ -94,10 +99,10 @@ function conseils() {
     
     global $content;
     
-    $id = 2; // a remplacer par $_GET['idcat']
+    $id = 2; // a remplacer par $_GET['idcat'] ou array
     
     $marticle = new MArticle();
-    $data = $marticle-> SelectAll($id);
+    $data = $marticle-> SelectResume($id);
     array_walk($data, 'strip_xss');
     
     //debug($data); 
