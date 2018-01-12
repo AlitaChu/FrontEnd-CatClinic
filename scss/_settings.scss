@@ -74,7 +74,7 @@ $foundation-palette: (
   success: #c8d8db /*#3adb76*/,
   warning: #f25f98/*#ffae00*/,
   alert: #dd073a /*#cc4b37*/,
-  white: rgba(250,250,250,0.8),
+  white: rgba(250,250,250,0.7),
 );
 $light-gray: #e6e6e6;
 $medium-gray: #aaa;
@@ -168,7 +168,7 @@ $code-background: $light-gray;
 $code-border: 1px solid $medium-gray;
 $code-padding: rem-calc(2 5 1);
 $anchor-color: $primary-color;
-$anchor-color-hover: scale-color($anchor-color, $lightness: -14%);
+$anchor-color-hover: scale-color($anchor-color, $lightness: -35%);
 $anchor-text-decoration: none;
 $anchor-text-decoration-hover: underline;
 $hr-width: $global-width;
@@ -314,7 +314,7 @@ $buttongroup-radius-on-each: true;
 
 $callout-background: rgba(0,0,0,0.9);
 $callout-background-fade: 10%;
-$callout-border: 1px solid rgba($black, 0.25);
+$callout-border: 0px solid rgba($black, 0.25);
 $callout-margin: 1rem 0 1rem 0;
 $callout-padding: 1rem;
 $callout-font-color: $body-font-color;
