@@ -61,15 +61,30 @@ function specialites() {
     
     global $content;
     
+    $id = 1; // a remplacer par $_GET['idcat']
+    
+    $marticle = new MArticle();
+    $data = $marticle-> SelectAll($id);
+    array_walk($data, 'strip_xss');
+    
+    //debug($data); 
+    
     $content['title'] = 'Cat Clinic - Nos Specialités';
     $content['description'] = ' ... ';
     $content['keywords'] = '';
     $content['author'] = 'Lambert Nathaelle';
     
-    $content['class'] = 'VSpecialites';
+    /*$content['class'] = 'VSpecialites';
     $content['method'] = 'showSpecialites';
     
-    $content['arg'] = $data;
+    $content['arg'] = $data;*/
+    
+    //Pour test :
+    $content['class'] = 'VHtml';
+    $content['method'] = 'showHtml';
+    $html = '../Html/specialites.html';
+    
+    $content['arg'] = $html;
     
     return;
     
@@ -78,6 +93,14 @@ function specialites() {
 function conseils() {
     
     global $content;
+    
+    $id = 2; // a remplacer par $_GET['idcat']
+    
+    $marticle = new MArticle();
+    $data = $marticle-> SelectAll($id);
+    array_walk($data, 'strip_xss');
+    
+    //debug($data); 
     
     $content['title'] = 'Cat Clinic - Conseils pour votre animal';
     $content['description'] = ' ... ';
@@ -97,16 +120,16 @@ function infos() {
     
     global $content;
     
-    $servContent['title'] = 'Cat Clinic - Informations générales';
-    $servContent['description'] = ' ... ';
-    $servContent['keywords'] = '';
-    $servContent['author'] = 'Lambert Nathaelle';
+    $content['title'] = 'Cat Clinic - Informations générales';
+    $content['description'] = ' ... ';
+    $content['keywords'] = '';
+    $content['author'] = 'Lambert Nathaelle';
     
-    $servContent['class'] = 'VHtml';
-    $servContent['method'] = 'showHtml';
+    $content['class'] = 'VHtml';
+    $content['method'] = 'showHtml';
     
     $html = '../Html/infos.html';
-    $servContent['arg'] = $html;
+    $content['arg'] = $html;
     
     return;
     
