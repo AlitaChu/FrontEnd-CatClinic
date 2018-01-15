@@ -63,14 +63,27 @@ function specialites() {
     
     $id = 1; // a remplacer par $_GET['idcat'] ou array
     
-    $marticle = new MArticle();
-    $data = $marticle-> SelectAllResume($id);
-    array_walk($data, 'strip_xss');
+    //$marticle = new MArticle();
+    //$data = $marticle-> SelectAllResume($id);
+    //array_walk($data, 'strip_xss');
     
     //test du Select()
     //$marticle = new MArticle(2);
     //$data = $marticle-> Select();
     //array_walk($data, 'strip_xss');
+    
+    if(!isset($_GET['id']))
+    {
+        $method = 'showSpecialites';
+        $marticle = new MArticle();
+        $data = $marticle-> SelectAllResume($id);
+    } else
+    {
+        $method = 'showDetailsSpec';
+        $marticle = new MArticle($_GET['id']);
+        $data = $marticle-> Select();
+    }
+    array_walk($data, 'strip_xss');
     
     $content['title'] = 'Cat Clinic - Nos Specialités';
     $content['description'] = ' ... ';
@@ -79,16 +92,7 @@ function specialites() {
     
     $content['class'] = 'VSpecialites';
     
-    if(!isset($_GET['id']))
-    {
-        $method = 'showSpecialites';
-    } else
-    {
-        $method = 'showDetailsSpec';
-    }
-    
     $content['method'] = $method;
-    
     $content['arg'] = $data;
     
     return;
