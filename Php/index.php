@@ -79,7 +79,15 @@ function specialites() {
     
     $content['class'] = 'VSpecialites';
     
-    $content['method'] = 'showSpecialites';
+    if(!isset($_GET['id']))
+    {
+        $method = 'showSpecialites';
+    } else
+    {
+        $method = 'showDetailsSpec';
+    }
+    
+    $content['method'] = $method;
     
     $content['arg'] = $data;
     
