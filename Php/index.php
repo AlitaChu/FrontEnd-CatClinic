@@ -72,24 +72,16 @@ function specialites() {
     //$data = $marticle-> Select();
     //array_walk($data, 'strip_xss');
     
-    //debug($data); 
-    
     $content['title'] = 'Cat Clinic - Nos Specialités';
     $content['description'] = ' ... ';
     $content['keywords'] = '';
     $content['author'] = 'Lambert Nathaelle';
     
-    /*$content['class'] = 'VSpecialites';
+    $content['class'] = 'VSpecialites';
+    
     $content['method'] = 'showSpecialites';
     
-    $content['arg'] = $data;*/
-    
-    //Pour test :
-    $content['class'] = 'VHtml';
-    $content['method'] = 'showHtml';
-    $html = '../Html/specialites.html';
-    
-    $content['arg'] = $html;
+    $content['arg'] = $data;
     
     return;
     
