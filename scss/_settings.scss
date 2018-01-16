@@ -75,6 +75,7 @@ $foundation-palette: (
   warning: #f25f98/*#ffae00*/,
   alert: #dd073a /*#cc4b37*/,
   white: rgba(250,250,250,0.7),
+  pink: #fc06bd,
 );
 $light-gray: #e6e6e6;
 $medium-gray: #aaa;
@@ -148,7 +149,7 @@ $header-styles: (
   ),
   medium: (
     'h1': ('font-size': 40),
-    'h2': ('font-size': 31),
+    'h2': ('font-size': 28),
     'h3': ('font-size': 18),
     'h4': ('font-size': 25),
     'h5': ('font-size': 20),
@@ -319,7 +320,7 @@ $callout-margin: 1rem 0 1rem 0;
 $callout-padding: 1rem;
 $callout-font-color: $body-font-color;
 $callout-font-color-alt: $body-background;
-$callout-radius: $global-radius;
+$callout-radius: 0/*$global-radius*/;
 $callout-link-tint: 30%;
 
 // 14. Card
