@@ -37,8 +37,7 @@ switch ($EX) {
     case 'ins': insert(); break;
     //case 'esp': membres();
         //break;  
-    //case 'adm': admin();
-        //break;
+    case 'adm': admin(); break;
     case 'tes': test(); break;
     default : accueil(); break;
 }//--finswitch
@@ -146,6 +145,75 @@ function infos() {
     
 }/*-- infos() */
 
+
+/* --------------------------------------------------------------
+ * FONCTIONS DE CONTROLE :  
+ * login()
+ * membre()
+ * admin()
+ ---------------------------------------------------------------*/
+function admin() {
+    
+    global $content;
+    
+    if(isset($_GET['id_art'])) {
+        $marticle = new MArticle($_GET['id_art']);
+        $data = $marticle-> Select();
+    }
+    else if(isset($_GET['id_cat'])) {
+        $marticle = new MArticle();
+        $data = $marticle-> SelectAllResume($_GET['id_cat']);
+    } else {
+        $mcategorie = new MCategorie();
+        $data = $mcategorie-> SelectCat();
+    }
+    
+    array_walk($data, 'strip_xss');
+    
+    $content['title'] = 'Cat Clinic - Panneau d\'administration';
+    $content['description'] = ' ... ';
+    $content['keywords'] = '';
+    $content['author'] = 'Lambert Nathaelle';
+    
+    $content['class'] = 'VAdmin';
+    // Par default, affichage du panel 1 d'administration des articles, qui possède aussi le message 'Bienvenue'
+    $EX2 = isset ($_REQUEST['ex2']) ? $_REQUEST['ex2'] : 'pan1';
+    
+    // à terminer de créer 3 méthodes selon le paramètre transmis par le menu panel, devrait faciliter l'interrogation de la base, VAdmin à modifier et à scinder en 3!!!!! On oublie le VHtml
+    switch ($EX2) {
+        case 'pan1': $content['method'] = 'showAdmGeneral';
+                     $content['arg'] = $data;
+                     break;
+        case 'pan2': $content['method'] = 'showAdmClients';
+                     $content['arg'] = $data;
+                     break;
+        case 'pan3': $content['method'] = 'showAdmConsultations';
+                     $content['arg'] = $data;
+                     break;
+        default : die(); break;
+    }//--finswitch
+    
+    return;
+    
+}/*-- conseils() */
+
+
+
+
+
+
+
+
+
+
+
+/* --------------------------------------------------------------
+ * FONCTIONS DE CONTROLE :  
+ * insert()
+ * update()
+ * delete()
+ ---------------------------------------------------------------*/
+
 function test() {
     
     global $content;
@@ -223,12 +291,13 @@ function insert() {
     default : die(); break;
     }//--finswitch
     
-    /*$mtable-> SetValue($_POST);
-    $mtable-> Insert();*/
-    //test(); // == fonction précédente ou redirection
+    $mtable-> SetValue($_POST);
+    $mtable-> Insert();
     
-    test();
+    test(); // == fonction précédente ou redirection
+    
 }/*-- insert() */
+
 /* ---------------------------------------------------------------
  * Mise en page - Architecture 
  --------------------------------------------------------------- */
