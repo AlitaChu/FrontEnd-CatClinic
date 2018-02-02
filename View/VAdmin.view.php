@@ -10,31 +10,29 @@ class VAdmin
     {
         //debug($_data);
         // Code html (vue) de la section 'administration' --->
+        $arg = 'arti';
+        $_SESSION['arg'] = $arg;
         
         if(!isset($_GET['id_cat'])) {
-            $list_cat = '<ul>';
+            $list_cat = '<p>Catégories :</p><ul>';
             foreach ($_data as $val_cat) {
                 $list_cat .= '<li><a href="../Php/index.php?ex=adm&id_cat='.$val_cat['ID_CATEGORIE'].'">'.$val_cat['TITRE_CATEGORIE'].'</a></li>';
             }
             $list_cat .= '</ul>';
             $view = $list_cat;
         } else {
-            $list_art = '<ul>';
+            $list_art = '<p>Articles :</p><ul>';
             foreach ($_data as $val_art) {
                 $list_art .= '<li><a href="../Php/index.php?ex=adm&id_cat='.$val_art['ID_CATEGORIE'].'&id_art='.$val_art['ID_ARTICLE'].'">'.$val_art['TITRE_ARTICLE'].'</a></li>';
             }
-            $cat = isset($_data[0]['TITRE_CATEGORIE']) ? $_data[0]['TITRE_CATEGORIE'].' :' : '';
+            $cat = isset($_data[0]['TITRE_CATEGORIE']) ? ' | '.$_data[0]['TITRE_CATEGORIE'].' :' : '';
             $list_art .= '</ul>';
-            $view = '<p><a href="../Php/index.php?ex=adm"><< Retour</a> | '.$cat.'</p>';
+            $view = '<p><a href="../Php/index.php?ex=adm"><< Retour</a>'.$cat.'</p>';
             $view .= $list_art;
         }
         
-        /*if(!isset($_GET['id_cat'])) {
-            $view = $list_cat;
-        } else {
-            $view = '';
-        }*/
         if(!isset($_GET['id_art'])) {
+            unset($_SESSION['id_rep']);
             $img_alt = '';
             $img = '';
             $titre = '';
@@ -43,6 +41,7 @@ class VAdmin
             $button = '<input class="button" type="submit" value="Ajouter l\'article" />';
             $action = 'ins';
         }else{
+            $_SESSION['id_rep'] = $_GET['id_art'];
             $img_alt = $_data[0]['IMG_ALT'];
             $img = '';
             $titre = $_data[0]['TITRE_ARTICLE'];
@@ -75,7 +74,7 @@ echo <<< HERE
                   <div class="tabs-content" data-tabs-content="example-tabs">
                     <div class="tabs-panel is-active" id="panel1v">
                       <h3>Général : Bienvenue dans votre espace d'administration!</h3>
-                      <p>Ici vous pouvez gérer (ajouter, modifier, supprimer) les articles parus sur votre site en sélectionnant une catégorie ci-dessous, ou ajouter un nouvel article.</p>
+                      <p>Ici vous pouvez gérer (modifier, supprimer) les articles parus sur votre site en sélectionnant une catégorie ci-dessous, ou ajouter un nouvel article.</p>
                       $view
                       <hr/>
 
@@ -114,7 +113,7 @@ echo <<< HERE
                         <input type="text" name="sstitre3" id="sstitre3" placeholder="Sous-titre 3 (optionnel)" />
                         <label for="parag3">Paragraphe 3 (opt.)</label>
                         <textarea name="parag3" id="parag3" placeholder="Paragraphe 3 (optionnel)"></textarea>
-                        <input type="hidden" value="arti" name="arg" />
+                        <input type="hidden" value="$arg" name="arg" />
                         $button
                       </form>  
 
@@ -137,11 +136,18 @@ HERE;
     {
         //debug($_data);
         // Code html (vue) de la section 'administration' --->
+        $arg = 'user';
+        $_SESSION['arg'] = $arg;
         
         $manimal = new MAnimal();
         $data_anim = $manimal-> Select(2);
         array_walk($data_anim, 'strip_xss');
         //debug($data_anim);
+        
+        $tr = '';
+        foreach ($_data as $val_cli) {
+                $tr .= '<tr><td>'.$val_cli['NOM'].'</td><td>'.$val_cli['PRENOM'].'</td><td>'.$val_cli['ADRESSE'].'</td><td>'.$val_cli['TELEPHONE'].'</td><td>'.$val_cli['EMAIL'].'</td><td><a href="../Php/index.php?ex=adm&ex2=pan2&id_cli='.$val_cli['ID_CLIENT'].'">Détails</a></td></tr>';
+            }
 
 echo <<< HERE
 <div class="white callout">
@@ -162,7 +168,7 @@ echo <<< HERE
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
                   </ul>
                 </div>
-                <div class="medium-9 columns">
+                <div class="medium-9 cell">
                   <div class="tabs-content" data-tabs-content="example-tabs">
 HERE;
         
@@ -170,51 +176,58 @@ HERE;
 echo <<< HERE
                     <div class="tabs-panel is-active" id="panel1v">
                       <h3>Informations clientèle</h3>
+                      <p>Ajouter un nouveau client :</p>
+                      <form action="../Php/index.php?ex=ins" method="post">
+                        <div class="grid-x grid-padding-x">
+                          <div class="medium-4 cell">
+                            <label>Nom :</label>
+                            <input type="text" placeholder="Nom" />
+                          </div>
+                          <div class="medium-4 cell">
+                            <label>Prénom :</label>
+                            <input type="text" placeholder="Prénom" />
+                          </div> 
+                          <div class="medium-4 cell">
+                            <label>EMail :</label>
+                            <input type="text" placeholder="Email" />
+                          </div>
+                          <div class="medium-8 cell">
+                            <label>Adresse :</label>
+                            <input type="text" placeholder="Adresse" />
+                          </div>
+                          <div class="medium-4 cell">
+                            <label>Téléphone :</label>
+                            <input type="text" placeholder="Téléphone" />
+                          </div> 
+                          <div class="medium-4 cell">
+                            <label>Mot de passe :</label>
+                            <input type="password" placeholder="Mot de passe"/>
+                            <input type="hidden" value="$arg" name="arg" />
+                          </div>
+                          <div class="medium-4 cell">
+                            <label>Retapez le mot de passe :</label>
+                            <input type="password" placeholder="Retaper le mot de passe"/>
+                          </div>
+                          <div class="medium-12 cell">
+                            <input class="button" type="submit" value="Ajouter" />
+                          </div>
+                        </div>          
+                      </form>
+                      <hr/>
+                      <p>Liste des clients :</p>
                       <table>
                         <thead>
                           <tr>
-                            <th width="150">Nom</th>
-                            <th>Prénom</th>
-                            <th width="150">Adresse</th>
-                            <th width="150">Téléphone</th>
+                            <th width="120">Nom</th>
+                            <th width="120">Prénom</th>
+                            <th width="120">Adresse</th>
+                            <th width="100">Téléphone</th>
                             <th>Email</th>
+                            <th>Ajout et détails animaux</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <form>
-                              <td><input type="text" placeholder="Nom" /></td>
-                              <td><input type="text" placeholder="Prénom" /></td>
-                              <td><input type="text" placeholder="Adresse" /></td>
-                              <td><input type="text" placeholder="Téléphone" /></td>
-                              <td><input type="text" placeholder="Email" /></td>
-                              <td><a class="button">+</a></td>
-                            </form>
-                          </tr>
-                          <tr>
-                            <td>Nom</td>
-                            <td>Prénom</td>
-                            <td>Adresse</td>
-                            <td>Téléphone</td>
-                            <td>Email</td>
-                            <td>Plus de détails</td>
-                          </tr>
-                          <tr>
-                            <td>Nom</td>
-                            <td>Prénom</td>
-                            <td>Adresse</td>
-                            <td>Téléphone</td>
-                            <td>Email</td>
-                            <td>Plus de détails</td>
-                          </tr>
-                          <tr>
-                            <td>Nom</td>
-                            <td>Prénom</td>
-                            <td>Adresse</td>
-                            <td>Téléphone</td>
-                            <td>Email</td>
-                            <td>Plus de détails</td>
-                          </tr>
+                          $tr  
                         </tbody>
                       </table>
                     </div>
@@ -235,11 +248,9 @@ HERE;
     {
         //debug($_data);
         // Code html (vue) de la section 'administration' --->
+        $arg = 'cons';
+        $_SESSION['arg'] = $arg;
         
-        $manimal = new MAnimal();
-        $data_anim = $manimal-> Select(2);
-        array_walk($data_anim, 'strip_xss');
-        //debug($data_anim);
 
 echo <<< HERE
 <div class="white callout">
