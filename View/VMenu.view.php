@@ -40,10 +40,10 @@ class VMenu
         echo <<< HERE
 <div class="top-bar-container" data-sticky-container>
         <div class="sticky" data-sticky data-options="anchor: page; marginTop: 0; stickyOn: small;">
-          <div class="top-bar grid-x grid-padding-x">
+          <nav class="top-bar grid-x grid-padding-x">
             <div class="medium-12 grid-container">
               <div class="grid-x grid-padding-x"> 
-                <div><a href="../Php/index.php"><img src="../img/catClinic.png" width="100px" alt="Cat Clinic"/><img src="../img/logoChat-1.png" width="35px" alt="Logo Cat Clinic"/></a></div>
+                <div><a href="../Php/index.php"><img src="../img/catClinic.png" width="100" alt="Cat Clinic"/><img src="../img/logoChat-1.png" width="35" alt="Logo Cat Clinic"/></a></div>
                 <div class="top-bar-left large-6 medium-8">
                   <ul class="dropdown menu" data-dropdown-menu>
                     $li_cat
@@ -60,7 +60,7 @@ class VMenu
                 </div>
                 <div class="top-bar-right">
                   <ul class="menu">
-                    <li><a href="#">Mon espace</a></li>
+                    <li><a href="../Php/index.php?ex=adm">Mon espace</a></li>
                     <li>
                       <input type="search" placeholder="Search">
                     </li>
@@ -71,7 +71,7 @@ class VMenu
                 </div>
               </div>
             </div>
-          </div>
+          </nav>
         </div>
       </div>
 HERE;
