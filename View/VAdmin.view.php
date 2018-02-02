@@ -19,11 +19,13 @@ class VAdmin
             $list_cat .= '</ul>';
             $view = $list_cat;
         } else {
-            $list_art = '';
+            $list_art = '<ul>';
             foreach ($_data as $val_art) {
-                $list_art .= '<p><a href="../Php/index.php?ex=adm&id_cat='.$val_art['ID_CATEGORIE'].'&id_art='.$val_art['ID_ARTICLE'].'">'.$val_art['TITRE_ARTICLE'].'</a></p>';
+                $list_art .= '<li><a href="../Php/index.php?ex=adm&id_cat='.$val_art['ID_CATEGORIE'].'&id_art='.$val_art['ID_ARTICLE'].'">'.$val_art['TITRE_ARTICLE'].'</a></li>';
             }
-            $view = '<p><a href="../Php/index.php?ex=adm"><< Retour</a></p>';
+            $cat = isset($_data[0]['TITRE_CATEGORIE']) ? $_data[0]['TITRE_CATEGORIE'].' :' : '';
+            $list_art .= '</ul>';
+            $view = '<p><a href="../Php/index.php?ex=adm"><< Retour</a> | '.$cat.'</p>';
             $view .= $list_art;
         }
         
@@ -32,6 +34,23 @@ class VAdmin
         } else {
             $view = '';
         }*/
+        if(!isset($_GET['id_art'])) {
+            $img_alt = '';
+            $img = '';
+            $titre = '';
+            $contenu = '';
+            $modif = 'Ajouter un nouvel article :';
+            $button = '<input class="button" type="submit" value="Ajouter l\'article" />';
+            $action = 'ins';
+        }else{
+            $img_alt = $_data[0]['IMG_ALT'];
+            $img = '';
+            $titre = $_data[0]['TITRE_ARTICLE'];
+            $contenu = $_data[0]['DESCRIPTION'];
+            $modif = 'Modifier l\'article : <em>(Dernière modification le '.$_data[0]['DAY'].'/'.$_data[0]['MONTH'].'/'.$_data[0]['YEAR'].')</em>';
+            $button = '<input class="button" type="submit" value="Modifier l\'article" /><p><a class="warning button" href="../Php/index.php?ex=del">Supprimer l\'article</a></p>';
+            $action = 'mod';
+        }
 
 echo <<< HERE
 <div class="white callout">
@@ -59,57 +78,9 @@ echo <<< HERE
                       <p>Ici vous pouvez gérer (ajouter, modifier, supprimer) les articles parus sur votre site en sélectionnant une catégorie ci-dessous, ou ajouter un nouvel article.</p>
                       $view
                       <hr/>
-HERE;
-        
-        
-        if(!isset($_GET['id_art'])) {              
-echo <<< HERE
-                      <form action="../Php/index.php?ex=ins" method="post" enctype="multipart/form-data">  
-                        <h3>Ajouter un nouvel article:</h3>
-                        <div class="grid-x grid-padding-x">
-                          <div class="large-3 medium-4 cell">
-                            <label>Catégorie</label>
-                            <select name="categorie">
-                              <option value="2">Fiches conseils</option>
-                              <option value="1">Nos spécialités</option>
-                              <option value="3">L'actu de la clinique</option>
-                            </select>
-                          </div>
-                          <div class="large-4 medium-4 cell">
-                            <label for="alt">Description de l'image</label>
-                            <input type="text" name="alt" id="alt" placeholder="Description de l'image" />
-                          </div>
-                          <div class="large-5 medium-4 cell">
-                            <label>Image</label>
-                            <input type="hidden" name="fichier_old" value="" />
-                            <input id="fichier" type="file" name="image" size="150" />
-                          </div>
-                        </div>
-                        <label for="titre">Titre</label>
-                        <input type="text" name="titre" id="titre" placeholder="Titre de l'article" />
-                        <label for="sstitre1">Sous-titre (opt.)</label>
-                        <input type="text" name="sstitre1" id="sstitre1" placeholder="Sous-titre (optionnel)" />
-                        <label for="parag1">Paragraphe</label>
-                        <textarea name="parag1" id="parag1" placeholder="Paragraphe"></textarea>
-                        <label for="sstitre2">Sous-titre 2 (opt.)</label>
-                        <input type="text" name="sstitre2" id="sstitre2" placeholder="Sous-titre 2 (optionnel)" />
-                        <label for="parag2">Paragraphe 2 (opt.)</label>
-                        <textarea name="parag2" id="parag2" placeholder="Paragraphe 2 (optionnel)"></textarea>
-                        <label for="sstitre3">Sous-titre 3 (opt.)</label>
-                        <input type="text" name="sstitre3" id="sstitre3" placeholder="Sous-titre 3 (optionnel)" />
-                        <label for="parag3">Paragraphe 3 (opt.)</label>
-                        <textarea name="parag3" id="parag3" placeholder="Paragraphe 3 (optionnel)"></textarea>
-                        <input type="hidden" value="arti" name="arg" />
-                        <input class="button" type="submit" value="Ajouter" />
-                      </form>  
-HERE;
-        } else {
-            //debug($_data);
-            $titre = $_data[0]['TITRE_ARTICLE'];
-            
-echo <<< HERE
-                      <form action="../Php/index.php?ex=ins" method="post" enctype="multipart/form-data">  
-                        <p>Modifier l'article:</p>
+
+                      <form action="../Php/index.php?ex=$action" method="post" enctype="multipart/form-data">  
+                        <p>$modif</p>
                         <div class="grid-x grid-padding-x">
                           <div class="large-4 medium-4 cell">
                             <label for="categorie">Catégorie</label>
@@ -121,7 +92,7 @@ echo <<< HERE
                           </div>
                           <div class="large-4 medium-4 cell">
                             <label for="alt">Description de l'image</label>
-                            <input type="text" name="alt" id="alt" placeholder="Description de l'image" />
+                            <input type="text" name="alt" id="alt"  value="$img_alt" placeholder="Description de l'image" />
                           </div>
                           <div class="large-4 medium-4 cell">
                             <label for="image">Image</label>
@@ -134,7 +105,7 @@ echo <<< HERE
                         <label for="sstitre1">Sous-titre (opt.)</label>
                         <input type="text" name="sstitre1" id="sstitre1" placeholder="Sous-titre (optionnel)" />
                         <label for="parag1">Paragraphe</label>
-                        <textarea name="parag1" id="parag1" placeholder="Paragraphe"></textarea>
+                        <textarea name="parag1" id="parag1" placeholder="Paragraphe">$contenu</textarea>
                         <label for="sstitre2">Sous-titre 2 (opt.)</label>
                         <input type="text" name="sstitre2" id="sstitre2" placeholder="Sous-titre 2 (optionnel)" />
                         <label for="parag2">Paragraphe 2 (opt.)</label>
@@ -144,13 +115,9 @@ echo <<< HERE
                         <label for="parag3">Paragraphe 3 (opt.)</label>
                         <textarea name="parag3" id="parag3" placeholder="Paragraphe 3 (optionnel)"></textarea>
                         <input type="hidden" value="arti" name="arg" />
-                        <input class="button" type="submit" value="Ajouter" />
+                        $button
                       </form>  
-HERE;
-            
-        }
-        
-echo <<< HERE
+
                     </div>
                     <!--
                     <div class="tabs-panel" id="panel3v">
