@@ -14,7 +14,6 @@ class MArticle
     public function __construct($_id_article = null)
     {
         $this-> conn = new PDO(DATABASE, LOGIN, PASSWD);
-        //$this->id_article = $_id_article;
         
         // Instanciation du membre $id_article
         $this->id_article = $_id_article;
@@ -43,7 +42,7 @@ class MArticle
         $result->bindValue(':VIGNETTE',$this->value['img_vig'], PDO::PARAM_STR);
         $result->bindValue(':IMAGE',$this->value['img'], PDO::PARAM_STR);
         $result->bindValue(':IMG_ALT',$this->value['alt'], PDO::PARAM_STR);
-        $result->bindValue(':ID_CATEGORIE',$this->value['categorie'], PDO::PARAM_STR);
+        $result->bindValue(':ID_CATEGORIE',$this->value['categorie'], PDO::PARAM_INT);
         
         $result->execute();
   	
@@ -51,15 +50,15 @@ class MArticle
     }
     
     //A voir si utilisé.......
-    public function SelectAll($_id_categorie)
+    public function SelectAll()
     {
         $query = 'select ID_ARTICLE, TITRE_ARTICLE, DESCRIPTION, VIGNETTE, IMAGE, IMG_ALT, DAY(DATE_ARTICLE) as DAY, MONTH(DATE_ARTICLE) as MONTH, YEAR(DATE_ARTICLE) as YEAR, art.ID_CATEGORIE 
                   from articles art, categories cat
-                  where art.ID_CATEGORIE = :ID_CATEGORIE';
+                 ';
         
         $result = $this->conn->prepare($query);
         
-        $result->bindValue(':ID_CATEGORIE', $_id_categorie, PDO::PARAM_INT);
+        //$result->bindValue(':ID_CATEGORIE', $_id_categorie, PDO::PARAM_INT);
         
         $result->execute(); //or die ($this->Error($result));
         
@@ -69,9 +68,10 @@ class MArticle
     /* Méthode SelectAll() allégée, pour éviter de ramener le gros texte contenu inutile pour les pages de sélection des articles */
     public function SelectAllResume($_id_categorie)
     {
-        $query = 'select ID_ARTICLE, TITRE_ARTICLE, VIGNETTE, IMAGE, IMG_ALT, art.ID_CATEGORIE 
-                  from articles art
-                  where art.ID_CATEGORIE = :ID_CATEGORIE';
+        $query = 'select ID_ARTICLE, TITRE_ARTICLE, VIGNETTE, IMAGE, IMG_ALT, art.ID_CATEGORIE, cat.ID_CATEGORIE, cat.TITRE_CATEGORIE
+                  from articles art, categories cat
+                  where art.ID_CATEGORIE = :ID_CATEGORIE
+                  and art.ID_CATEGORIE = cat.ID_CATEGORIE';
         
         $result = $this->conn->prepare($query);
         
@@ -84,22 +84,21 @@ class MArticle
     
     public function Select()
     {
-        echo $this->id_article;
+        //echo $this->id_article;
         $query = 'select ID_ARTICLE, TITRE_ARTICLE, DESCRIPTION, VIGNETTE, IMAGE, IMG_ALT, DAY(DATE_ARTICLE) as DAY, MONTH(DATE_ARTICLE) as MONTH, YEAR(DATE_ARTICLE) as YEAR, art.ID_CATEGORIE
                   FROM articles art
                   where ID_ARTICLE = :ID_ARTICLE';
         
         $result = $this->conn->prepare($query);
         
-        $result->bindValue(':ID_ARTICLE', $this->id_article, PDO::PARAM_INT);
+        $result->bindValue(':ID_ARTICLE', $this-> id_article, PDO::PARAM_INT);
         
         $result->execute(); // or die ($this->Error($result));
         
         return $result->fetchAll();
-        debug($result);
+        //debug($result);
     }
     
-    //Ajouter une méthode Modify() pour switcher sur insert/update/delete
     
     public function Delete()
     {
@@ -108,7 +107,7 @@ class MArticle
   	
   	    $result = $this->conn->prepare($query);
   	
-  	    $result->bindValue(':ID_ARTICLE', $this->id_mail, PDO::PARAM_INT);
+  	    $result->bindValue(':ID_ARTICLE', $this->id_article, PDO::PARAM_INT);
   	
   	    $result->execute(); //or die ($this->Error($result));
   	

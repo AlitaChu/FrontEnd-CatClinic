@@ -14,7 +14,6 @@ class MClient
     public function __construct($_id_client = null)
     {
         $this-> conn = new PDO(DATABASE, LOGIN, PASSWD);
-        //$this->id_article = $_id_article;
         
         // Instanciation du membre $id_article
         $this->id_client = $_id_client;
@@ -50,10 +49,10 @@ class MClient
         return;
     }
     
-    //A voir si utilisé.......
-    public function SelectAll($_id_categorie)
+    //OK, voir pour ajouter un order by etc... pour tri rapide!
+    public function SelectAll()
     {
-        $query = 'select ID_CLIENT, NOM, PRENOM, EMAIL, PASSWD
+        $query = 'select ID_CLIENT, NOM, PRENOM, EMAIL, PASSWD, ADRESSE, TELEPHONE
                   from clients';
         
         $result = $this->conn->prepare($query);
@@ -65,32 +64,17 @@ class MClient
         return $result->fetchAll();
     }
     
-    /* Méthode SelectAll() allégée, pour éviter de ramener le gros texte contenu inutile pour les pages de sélection des articles */
-    public function SelectAllResume($_id_categorie)
-    {
-        $query = 'select ID_ARTICLE, TITRE_ARTICLE, VIGNETTE, IMAGE, IMG_ALT, art.ID_CATEGORIE 
-                  from articles art
-                  where art.ID_CATEGORIE = :ID_CATEGORIE';
-        
-        $result = $this->conn->prepare($query);
-        
-        $result->bindValue(':ID_CATEGORIE', $_id_categorie, PDO::PARAM_INT);
-        
-        $result->execute(); //or die ($this->Error($result));
-        
-        return $result->fetchAll();
-    }
     
     public function Select()
     {
         //echo $this->id_article;
-        $query = 'select ID_ARTICLE, TITRE_ARTICLE, DESCRIPTION, VIGNETTE, IMAGE, IMG_ALT, DAY(DATE_ARTICLE) as DAY, MONTH(DATE_ARTICLE) as MONTH, YEAR(DATE_ARTICLE) as YEAR, art.ID_CATEGORIE
-                  FROM articles art
-                  where ID_ARTICLE = :ID_ARTICLE';
+        $query = 'select ID_CLIENT, NOM, PRENOM, EMAIL, PASSWD, ADRESSE, TELEPHONE
+                  FROM clients
+                  where ID_CLIENT = :ID_CLIENT';
         
         $result = $this->conn->prepare($query);
         
-        $result->bindValue(':ID_ARTICLE', $this->id_article, PDO::PARAM_INT);
+        $result->bindValue(':ID_CLIENT', $this->id_client, PDO::PARAM_INT);
         
         $result->execute(); // or die ($this->Error($result));
         
@@ -102,12 +86,12 @@ class MClient
     
     public function Delete()
     {
-        $query = 'delete from articles
-              where ID_ARTICLE = :ID_ARTICLE';
+        $query = 'delete from clients
+              where ID_CLIENT = :ID_CLIENT';
   	
   	    $result = $this->conn->prepare($query);
   	
-  	    $result->bindValue(':ID_ARTICLE', $this->id_mail, PDO::PARAM_INT);
+  	    $result->bindValue(':ID_CLIENT', $this->id_client, PDO::PARAM_INT);
   	
   	    $result->execute(); //or die ($this->Error($result));
   	
