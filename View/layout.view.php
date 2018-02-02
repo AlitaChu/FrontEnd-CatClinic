@@ -4,6 +4,7 @@
 
     /* Instanciation du contenu <div> servContent de la section 'services' (section du cv texte) en fonction de la classe à appeller (définie par le switch principal) */
     $vcontent = new $content['class']();
+    //$vadmContent = new $admContent['class']();
 ?>
 
 <!DOCTYPE html>
@@ -85,13 +86,6 @@
     //}
     ?>
 
-    <section id="contact">
-    <?php
-        
-    //include('../Html/contact.html');
-
-    ?>
-    </section>
     </div>
         
     <script src="../bower_components/jquery/dist/jquery.js"></script>
