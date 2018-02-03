@@ -68,6 +68,7 @@ echo <<< HERE
                     <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan1" aria-selected="true">Général</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
                   </ul>
                 </div>
                 <div class="medium-9 cell">
@@ -166,6 +167,7 @@ echo <<< HERE
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
                     <li class="tabs-title is-active" aria-selected="true"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
                   </ul>
                 </div>
                 <div class="medium-9 cell">
@@ -269,6 +271,7 @@ echo <<< HERE
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
                     <li class="tabs-title is-active" aria-selected="true"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
                   </ul>
                 </div>
                 <div class="medium-9 columns">
@@ -277,7 +280,7 @@ HERE;
         
         
 echo <<< HERE
-                    <div class="tabs-panel is-active" id="panel3v">
+                    <div class="tabs-panel is-active" id="panel1v">
                       <p>Tableau des consultations</p>
                       <p>Check me out! I'm a super cool Tab panel with text content!</p>
                     </div>
@@ -290,16 +293,49 @@ HERE;
      
     }
     
-    public function showDetails($_data)
+    public function showAdmAdmin($_data)
     {
         //debug($_data);
-        //echo 'avec id ='.$_GET['id'];
-        // Code html (vue) de la section 'spécialités' --->
+        // Code html (vue) de la section 'administration' --->
+        $arg = 'admi';
+        $_SESSION['arg'] = $arg;
         
 
 echo <<< HERE
-
-
+<div class="white callout">
+            <div class="grid-container">
+              <div class="grid-x grid-padding-x">
+                <div class="large-3 medium-6 small-12 cell">
+                  <h2>Administration</h2> 
+                </div> 
+                <div class="large-9 medium-6 small-12 cell">
+                  <hr/> 
+                </div> 
+              </div>
+              <div class="grid-x grid-padding-x collapse">
+                <div class="medium-3 cell">
+                  <ul class="vertical tabs" data-tabs id="example-tabs">
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
+                    <li class="tabs-title is-active" aria-selected="true"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
+                  </ul>
+                </div>
+                <div class="medium-9 columns">
+                  <div class="tabs-content" data-tabs-content="example-tabs">
+HERE;
+        
+        
+echo <<< HERE
+                    <div class="tabs-panel is-active" id="panel1v">
+                      <p>Gestion des administrateurs</p>
+                      <p>Check me out! I'm a super cool Tab panel with text content!</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 HERE;
      
     }
