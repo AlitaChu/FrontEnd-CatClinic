@@ -1,9 +1,13 @@
 <?php
 session_start();
-//session_cache_limiter('nocache');
 
 /* $_SESSION : valeurs utilisée : voir dans require!
 */
+
+// Pour test!!!
+$_SESSION['adm']['id'] = 1;
+$_SESSION['adm']['state'] = 'on';
+
 require('../Inc/require.inc.php');
 
 /*---------------- Session langues --------------------*/
@@ -31,23 +35,22 @@ $EX = isset ($_REQUEST['ex']) ? $_REQUEST['ex'] : 'accueil';
 /* La fonction de contrôle infos() devra afficher l'ancre' par défaut de la section 'infos' */
 
 /* La fonction de contrôle login() vérifiera les infos envoyées par le formulaire, et affichera soit l'espace admin, soit l'espace membres */
-/* La fonction de contrôle deconnect() a pour effet de vider $_SESSION['user] */
+/* La fonction de contrôle deconnect() a pour effet de vider $_SESSION['user'] */
 switch ($EX) {
     case 'spe': specialites(); break;
     case 'fco': conseils(); break;
-    case 'inf': infos(); break;
-    // fonction de vérification du login//si ok ouverture de l'un des deux contrôleurs d'administration    
+    case 'inf': infos(); break;   
     case 'log': login(); break;
     case 'dec': deconnect(); break;
     case 'ins': insert(); break;
     case 'mod': update(); break;
     case 'del': delete(); break;
-    //case 'esp': membres();
-        //break;  
+    case 'mem': membres(); break;  
     case 'adm': admin(); break;
     case 'tes': test(); break;
     default : accueil(); break;
-}//--finswitch
+}/*-- finswitch */
+
 
 /* --------------------------------------------------------------
  * FONCTIONS DE CONTROLE :  
@@ -56,7 +59,6 @@ switch ($EX) {
  * conseils()
  * infos()
  ---------------------------------------------------------------*/
-
 function accueil() {
     
     global $content;
@@ -133,6 +135,7 @@ function conseils() {
     
 }/*-- conseils() */
 
+
 function infos() {
     
     global $content;
@@ -152,142 +155,29 @@ function infos() {
     
 }/*-- infos() */
 
-
 /* --------------------------------------------------------------
- * FONCTIONS DE CONTROLE :  
- * login()
- * membre()
- * admin()
- ---------------------------------------------------------------*/
-function admin() {
-    
-    global $content;
-    
-    function panel1() {
-        if(isset($_GET['id_art'])) {
-            $marticle = new MArticle($_GET['id_art']);
-            $data = $marticle-> Select();
-        }
-        else if(isset($_GET['id_cat'])) {
-            $marticle = new MArticle();
-            $data = $marticle-> SelectAllResume($_GET['id_cat']);
-        } else {
-            $mcategorie = new MCategorie();
-            $data = $mcategorie-> SelectCat();
-        }
-    array_walk($data, 'strip_xss');
-    return $data;    
-    }
-    
-    function panel2() {
-        if(isset($_GET['id_client'])) {
-            $mclient = new MClient($_GET['id_art']);
-            $data = $mclient-> Select();
-        }
-        /*else if(isset($_GET['id_cat'])) {
-            $marticle = new MArticle();
-            $data = $marticle-> SelectAllResume($_GET['id_cat']);
-        }*/ else {
-            $mclient = new MCLient();
-            $data = $mclient-> SelectAll();
-        }
-    array_walk($data, 'strip_xss');
-    return $data;    
-    }
-    
-    function panel3() {
-        
-    //array_walk($data, 'strip_xss');
-    //return $data;    
-    }
-    
-    function panel4() {
-        
-    //array_walk($data, 'strip_xss');
-    //return $data;    
-    }
-    
-    $content['title'] = 'Cat Clinic - Panneau d\'administration';
-    $content['description'] = ' ... ';
-    $content['keywords'] = '';
-    $content['author'] = 'Lambert Nathaelle';
-    
-    $content['class'] = 'VAdmin';
-    // Par default, affichage du panel 1 d'administration des articles, qui possède aussi le message 'Bienvenue'
-    $EX2 = isset ($_REQUEST['ex2']) ? $_REQUEST['ex2'] : 'pan1';
-    
-    switch ($EX2) {
-        case 'pan1': $data = panel1();
-                     $content['method'] = 'showAdmGeneral';
-                     $content['arg'] = $data;
-                     break;
-        case 'pan2': $data = panel2();
-                     $content['method'] = 'showAdmClients';
-                     $content['arg'] = $data;
-                     break;
-        case 'pan3': $data = panel3();
-                     $content['method'] = 'showAdmConsultations';
-                     $content['arg'] = $data;
-                     break;
-        case 'pan4': $data = panel4();
-                     $content['method'] = 'showAdmAdmin';
-                     $content['arg'] = $data;
-                     break;
-        default : die(); break;
-    }//--finswitch
-    
-    return;
-    
-}/*-- conseils() */
-
-
-
-
-
-
-
-
-
-
-
-/* --------------------------------------------------------------
- * FONCTIONS DE CONTROLE :  
+ * FONCTIONS DE CONTROLE : (FORMULAIRE)
  * insert()
  * update()
  * delete()
  ---------------------------------------------------------------*/
-
-function test() {
-    
-    global $content;
-    
-    $content['title'] = 'Cat Clinic - Accueil';
-    $content['description'] = 'Bienvenue dans votre clinique spécialisée dans le soin de vos félins';
-    $content['keywords'] = '';
-    $content['author'] = 'Lambert Nathaelle';
-    
-    $content['class'] = 'VHtml';
-    $content['method'] = 'showHtml';
-    $content['arg'] = '../Html/test.html';
-    
-    return;
-    
-}/*-- test() */
-
-
 function insert() {
     
-    isset($_POST['passwd']) ? $_POST['passwd'] = password_hash($_POST['passwd'], PASSWORD_BCRYPT) : '';
+    /* Vérification de la correspondance des mots de passe et encryptage */
+    if(isset($_POST['passwd1']) && isset($_POST['passwd2'])) {
+        if($_POST['passwd1'] === $_POST['passwd2']) {
+            $_POST['passwd'] = $_POST['passwd1'];
+        }
+        isset($_POST['passwd']) ? $_POST['passwd'] = password_hash($_POST['passwd'], PASSWORD_BCRYPT) : ''; 
+    }
     
-    debug($_POST);
-    debug($_FILES);
+    //debug($_POST);
     /* $_FILES = tabarray :
      * $_FILES['image']['name'] -> nom du fichier initial
      * $_FILES['image']['type'] -> type mime
      * $_FILES['image']['tmp_name'] -> chemin du fichier temporaire
      * $_FILES['image']['error'] -> s'il y a une erreur, à gérer!
-     * $_FILES['image']['size'] -> taille du fichier
-    */
+     * $_FILES['image']['size'] -> taille du fichier */
     
     /* Teste s'il y a téléchargement d'une image : 
      * Vérifer 1. Attribut 'name' du form, 
@@ -300,86 +190,238 @@ function insert() {
         $filename_vignette_new = 'vignettes/' . $filename_new;
         $filename_fullsize_new = 'fullsize/' . $filename_new;
 
-        // Redimensionne les images en fullsize
+        /* Redimensionne les images en fullsize */
         $fullsize_new = img_resize($_FILES['image']['tmp_name'], 450, 450);
-        // Génère l'image fullsize $fullsizeimage_new vers le fichier $filename_new suivant le mime :
+        /* Génère l'image fullsize $fullsizeimage_new vers le fichier $filename_new en fonctoin de son mime : */
         switch ($_FILES['image']['type'])
         {
             case 'image/png'  : imagepng($fullsize_new, UPLOAD . $filename_fullsize_new, 0);  break;// 0 == compression minimum
             case 'image/jpeg' : imagejpeg($fullsize_new, UPLOAD . $filename_fullsize_new, 100); break;// 100 == compression maximum
             case 'image/gif'  : imagegif($fullsize_new, UPLOAD . $filename_fullsize_new);  break;
-        }
+        }/*-- finswitch */
 
-        // Redimensionne l'image de la vignette :
+        /* Redimensionne l'image de la vignette : */
         $vignette_new = img_resize($_FILES['image']['tmp_name'], 150, 150);
-        // Génère l'image $image_new vers le fichier $file_new suivant le mime
+        /* Génère l'image $image_new vers le fichier $file_new en fonction de son mime */
         switch ($_FILES['image']['type'])
         {
             case 'image/png'  : imagepng($vignette_new, UPLOAD . $filename_vignette_new, 0);  break;// 0 == compression minimum
             case 'image/jpeg' : imagejpeg($vignette_new, UPLOAD . $filename_vignette_new, 100); break;// 100 == compression maximum
             case 'image/gif'  : imagegif($vignette_new, UPLOAD . $filename_vignette_new);  break;
-        }
+        }/*-- finswitch */
 
-        // Ajoute au tableau $_POST (et donc $_value pour l'insertion) la clef IMG avec le nom du fichier pour insertion dans la base
+        /* Ajoute au tableau $_POST la clef ['IMG'] avec le nom du fichier pour insertion dans la base */
         $_POST['img'] = $filename_fullsize_new;
         $_POST['img_vig'] = $filename_vignette_new;
     }
     
+    /* Switch de l'argument $_POST['arg'] passé en champ hidden, en fonction du formulaire d'insertion utilisé, déterminant le modèle à appeler */
     switch($_POST['arg']){
-    case 'user': $mtable = new MClient(); break;
-    case 'anim': $mtable = new MAnimal(); break;
-    case 'cons': $mtable = new MConsultation(); break;
-    case 'arti': $_POST['contenu'] = text_format();
-                 $mtable = new MArticle(); break;
-    case 'admi': $mtable = new MVeterinaire(); break;
-    default : die(); break;
-    }//--finswitch
+        case 'user': $retour = admin();
+                     $mtable = new MClient(); break;
+        case 'anim': $retour = admin();
+                     $mtable = new MAnimal(); break;
+        case 'cons': $retour = admin();
+                     $_POST['id_veterinaire'] = $_SESSION['adm']['id'];
+                     $mtable = new MConsultation(); break;
+        case 'arti': $retour = admin();
+                     $_POST['contenu'] = text_format();
+                     $mtable = new MArticle(); break;
+        case 'acte': $retour = admin();
+                     $_POST['id_cons'] = $_SESSION['adm']['id_cons'];
+                     $mtable = new MActe(); break;
+        case 'admi': $mtable = new MVeterinaire(); break;
+        default : die(); break;
+    }/*-- finswitch */
     
     $mtable-> SetValue($_POST);
     $mtable-> Insert();
     
-    test(); // == fonction précédente ou redirection
+    $retour;//test(); // == fonction précédente ou redirection
     
 }/*-- insert() */
 
+
 function update() {
     
-    switch($_POST['arg']){
-    case 'user': $mtable = new MClient(); break;
-    case 'anim': $mtable = new MAnimal(); break;
-    case 'cons': $mtable = new MConsultation(); break;
-    case 'arti': $_POST['contenu'] = text_format();
-                 $mtable = new MArticle(); break;
-    case 'admi': $mtable = new MVeterinaire(); break;
-    default : die(); break;
-    }//--finswitch
+    $id_mod = isset($_SESSION['adm']['id_rep']) ? $_SESSION['adm']['id_rep'] : '';
+    unset($_SESSION['adm']['id_rep']);
     
-    unset($_SESSION['id_rep']);
-    test(); // == fonction précédente ou redirection
-}
+    /* Switch de l'argument $_POST['arg'] passé en champ hidden, en fonction du formulaire de modification utilisé, déterminant le modèle à appeler */
+    switch($_POST['arg']){
+        case 'user': $retour = admin();
+                     $mtable = new MClient(); break;
+        case 'anim': $retour = admin();
+                     $mtable = new MAnimal(); break;
+        case 'cons': $retour = admin();
+                     $mtable = new MConsultation($id_mod); break;
+        case 'arti': $retour = admin();
+                     $_POST['contenu'] = text_format();
+                     $mtable = new MArticle($id_mod); break;
+        case 'admi': $mtable = new MVeterinaire(); break;
+        default : die(); break;
+    }/*-- finswitch */
+    
+    $mtable-> SetValue($_POST);
+    $mtable-> Update();
+    $retour;/* redirection, voir pour le gérer avec une variable de session */
+}/*-- update() */
+
 
 function delete() {
     
-    $id_del = $_SESSION['id_rep'];
-    unset($_SESSION['id_rep']);
+    $id_del = isset($_SESSION['adm']['id_rep'])? $_SESSION['adm']['id_rep'] : '';
+    unset($_SESSION['adm']['id_rep']);
     
-    $arg = $_SESSION['arg'];
-    unset($_SESSION['arg']);
+    $arg = $_SESSION['adm']['arg'];
+    unset($_SESSION['adm']['arg']);
+    
+    if($arg == 'acte') {
+        // mettre une erreur de suppression car consultation non-vide
+    }
+    
+    /* Sécurité : Vérification lors de la suppression d'un acte, pour qu'il appartienne bien à la consultation courante/mise en $_SESSION['adm']['id_rep'], même en interface admin, on sait jamais... */
+    $act = '';
+    if(isset($_GET['act'])) {
+        $macte = new MActe($_GET['act']);
+        $data = $macte-> SelectActe($id_del);
+        foreach ($data as $val) {
+            if ($val['ID_ACTE'] == $_GET['act']) {
+                $act = $_GET['act'];
+            } 
+        }
+    }
     
     switch($arg){
-    case 'user': $mtable = new MClient(); break;
-    case 'anim': $mtable = new MAnimal(); break;
-    case 'cons': $mtable = new MConsultation(); break;
-    case 'arti': $mtable = new MArticle($id_del); break;
-    case 'admi': // verif si ce n'est pas l'admin principal sinon :
-                 $mtable = new MVeterinaire(); break;
-    default : die(); break;
-    }//--finswitch
+        case 'user': $retour = admin();
+                     $mtable = new MClient($id_del); break;
+        case 'anim': $retour = admin();
+                     $mtable = new MAnimal($id_del); break;
+        case 'cons': $retour = admin();
+                     $mtable = new MConsultation($id_del); break;
+        case 'arti': $retour = admin();
+                     $mtable = new MArticle($id_del); break;
+        case 'acte': $retour = admin();
+                     $mtable = new MActe($act); break;
+        case 'admi': // verif si ce n'est pas l'admin principal sinon :
+                     $mtable = new MVeterinaire($id_del); break;
+        default : die(); break;
+    }/*-- finswitch */
     
     $mtable-> Delete();
     
-    test(); // == fonction précédente ou redirection
-}
+    $retour; // == fonction précédente ou redirection
+    
+}/*-- delete() */
+
+
+/* --------------------------------------------------------------
+ * FONCTIONS DE CONTROLE :  
+ * login()
+ * membre()
+ * admin()
+ ---------------------------------------------------------------*/
+function admin() {
+    
+    global $content;
+    
+    /* Teste que le mode administration soit autorisé, sinon, affichage page d'erreur */
+    if (isset($_SESSION['adm']['state']) && $_SESSION['adm']['state'] == 'on') {
+        
+        /* Panel 1 : Général, gestion de la parution des articles */
+        function panel1() {
+            if(isset($_GET['id_art'])) {
+                $marticle = new MArticle($_GET['id_art']);
+                $data = $marticle-> Select();
+            } else if(isset($_GET['id_cat'])) {
+                $marticle = new MArticle();
+                $data = $marticle-> SelectAllResume($_GET['id_cat']);
+            } else {
+                $mcategorie = new MCategorie();
+                $data = $mcategorie-> SelectCat();
+            }
+        array_walk($data, 'strip_xss');
+        return $data;    
+        }
+    
+        /* Panel 2 : Gestion de la clientèle et des animaux */
+        function panel2() {
+            if(isset($_GET['id_client'])) {
+                $mclient = new MClient($_GET['id_art']);
+                $data = $mclient-> Select();
+            } else {
+                $mclient = new MCLient();
+                $data = $mclient-> SelectAll();
+            }
+            array_walk($data, 'strip_xss');
+            return $data;    
+        }
+    
+        /* Panel 3 : Gestion des consultations */
+        function panel3() {
+            if(isset($_GET['id_cons'])) {
+                $mconsultation = new MConsultation($_GET['id_cons']);
+                $data = $mconsultation-> Select();
+            } else {
+                $mconsultation = new MConsultation();
+                $data = $mconsultation-> SelectAll();
+            }
+            array_walk($data, 'strip_xss');
+            return $data;    
+        }
+    
+        /* Panel 1 : Gestion des administrateurs */
+        function panel4() {
+        
+        //array_walk($data, 'strip_xss');
+        //return $data;    
+        }
+    
+        $content['title'] = 'Cat Clinic - Panneau d\'administration';
+        $content['description'] = ' ... ';
+        $content['keywords'] = '';
+        $content['author'] = 'Lambert Nathaelle';
+    
+        $content['class'] = 'VAdmin';
+    
+        /* Affichage par défaut */
+        $EX2 = isset ($_REQUEST['ex2']) ? $_REQUEST['ex2'] : 'pan1';
+
+        switch ($EX2) {
+            case 'pan1': $data = panel1();
+                         $content['method'] = 'showAdmGeneral';
+                         $content['arg'] = $data;
+                         break;
+            case 'pan2': $data = panel2();
+                         $content['method'] = 'showAdmClients';
+                         $content['arg'] = $data;
+                         break;
+            case 'pan3': $data = panel3();
+                         $content['method'] = 'showAdmConsultations';
+                         $content['arg'] = $data;
+                         break;
+            case 'pan4': $data = panel4();
+                         $content['method'] = 'showAdmAdmin';
+                         $content['arg'] = $data;
+                         break;
+            default : die(); break;
+        }/*-- finswitch */
+    
+        return;
+    } else {
+        $content['title'] = 'Cat Clinic';
+        $content['description'] = ' ... ';
+        $content['keywords'] = '';
+        $content['author'] = 'Lambert Nathaelle';
+    
+        $content['class'] = 'VHtml';
+        $content['method'] = 'showHtml';
+        $content['arg'] = '';
+    }
+    
+    
+    
+}/*-- admin() */
 
 /* ---------------------------------------------------------------
  * Mise en page - Architecture 
