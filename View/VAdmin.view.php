@@ -8,10 +8,9 @@ class VAdmin
     
     public function showAdmGeneral($_data)
     {
-        //debug($_data);
-        // Code html (vue) de la section 'administration' --->
+        /* Code html (vue) de la section 'administration : général, gestion de la parution des articles sur le site' ---> */
         $arg = 'arti';
-        $_SESSION['arg'] = $arg;
+        $_SESSION['adm']['arg'] = $arg;
         
         if(!isset($_GET['id_cat'])) {
             $list_cat = '<p>Catégories :</p><ul>';
@@ -32,7 +31,7 @@ class VAdmin
         }
         
         if(!isset($_GET['id_art'])) {
-            unset($_SESSION['id_rep']);
+            unset($_SESSION['adm']['id_rep']);
             $img_alt = '';
             $img = '';
             $titre = '';
@@ -41,7 +40,7 @@ class VAdmin
             $button = '<input class="button" type="submit" value="Ajouter l\'article" />';
             $action = 'ins';
         }else{
-            $_SESSION['id_rep'] = $_GET['id_art'];
+            $_SESSION['adm']['id_rep'] = $_GET['id_art'];
             $img_alt = $_data[0]['IMG_ALT'];
             $img = '';
             $titre = $_data[0]['TITRE_ARTICLE'];
@@ -135,20 +134,19 @@ HERE;
     
     public function showAdmClients($_data)
     {
-        //debug($_data);
-        // Code html (vue) de la section 'administration' --->
+        /* Code html (vue) de la sous-section 'administration : gestion de la clientèle' ---> */
         $arg = 'user';
-        $_SESSION['arg'] = $arg;
+        $_SESSION['adm']['arg'] = $arg;
         
+        // à modifier avec le bon id_client!!!! à la place du 2!!!!
         $manimal = new MAnimal();
         $data_anim = $manimal-> Select(2);
         array_walk($data_anim, 'strip_xss');
-        //debug($data_anim);
         
         $tr = '';
         foreach ($_data as $val_cli) {
                 $tr .= '<tr><td>'.$val_cli['NOM'].'</td><td>'.$val_cli['PRENOM'].'</td><td>'.$val_cli['ADRESSE'].'</td><td>'.$val_cli['TELEPHONE'].'</td><td>'.$val_cli['EMAIL'].'</td><td><a href="../Php/index.php?ex=adm&ex2=pan2&id_cli='.$val_cli['ID_CLIENT'].'">Détails</a></td></tr>';
-            }
+        }
 
 echo <<< HERE
 <div class="white callout">
@@ -183,32 +181,32 @@ echo <<< HERE
                         <div class="grid-x grid-padding-x">
                           <div class="medium-4 cell">
                             <label>Nom :</label>
-                            <input type="text" placeholder="Nom" />
+                            <input type="text" name="nom" id="nom" placeholder="Nom" />
                           </div>
                           <div class="medium-4 cell">
                             <label>Prénom :</label>
-                            <input type="text" placeholder="Prénom" />
+                            <input type="text" name="prenom" id="prenom" placeholder="Prénom" />
                           </div> 
                           <div class="medium-4 cell">
                             <label>EMail :</label>
-                            <input type="text" placeholder="Email" />
+                            <input type="text" name="email" id="email" placeholder="Email" />
                           </div>
                           <div class="medium-8 cell">
                             <label>Adresse :</label>
-                            <input type="text" placeholder="Adresse" />
+                            <input type="text" name="adresse" id="adresse" placeholder="Adresse" />
                           </div>
                           <div class="medium-4 cell">
                             <label>Téléphone :</label>
-                            <input type="text" placeholder="Téléphone" />
+                            <input type="text" name="telephone" id="telephone" placeholder="Téléphone" />
                           </div> 
                           <div class="medium-4 cell">
                             <label>Mot de passe :</label>
-                            <input type="password" placeholder="Mot de passe"/>
+                            <input type="password" name="passwd1" id="passwd1" placeholder="Mot de passe"/>
                             <input type="hidden" value="$arg" name="arg" />
                           </div>
                           <div class="medium-4 cell">
                             <label>Retapez le mot de passe :</label>
-                            <input type="password" placeholder="Retaper le mot de passe"/>
+                            <input type="password" name="passwd2" id="passwd2" placeholder="Retaper le mot de passe"/>
                           </div>
                           <div class="medium-12 cell">
                             <input class="button" type="submit" value="Ajouter" />
@@ -248,11 +246,42 @@ HERE;
     
     public function showAdmConsultations($_data)
     {
-        //debug($_data);
-        // Code html (vue) de la section 'administration' --->
-        $arg = 'cons';
-        $_SESSION['arg'] = $arg;
+        // Code html (vue) de la sous-section 'administration : gestion des consultations' --->
         
+        if(!isset($_GET['id_cons'])) {
+            if (!isset($_GET['form'])) {
+                unset($_SESSION['adm']['id_rep']);
+                $titre = '<p><a href="../Php/index.php? ex=adm&ex2=pan3&form=true" class="button">Nouvelle consultation</a></p>
+                          <p>Tableau des consultations :</p>';
+                $tr = '<table>
+                          <thead>
+                              <tr>
+                                  <th width="80">Date</th>
+                                  <th width="100">Animal</th>
+                                  <th width="80">Espèce</th>
+                                  <th width="50">Sexe</th><th>Propriétaire</th>
+                                  <th>Motif consultation</th><th>Compte-rendu et soins</th><th>Actes..</th>
+                              </tr>
+                          </thead>
+                          <tbody>';
+                foreach ($_data as $val_cons) {
+                    $tr .= '<tr><td>'.$val_cons['DAY'].'/'.$val_cons['MONTH'].'/'.$val_cons['YEAR'].'</td>
+                    <td>'.$val_cons['NOM_ANIMAL'].'</td><td>'.$val_cons['ESPECE'].'</td><td>'.$val_cons['SEXE'].'</td><td>'.$val_cons['NOM'].' '.$val_cons['PRENOM'].'</td>
+                    <td>'.$val_cons['MOTIF'].'</td>
+                    <td>'.$val_cons['COMPTE_RENDU_SOINS'].'</td>
+                    <td><a href="../Php/index.php?ex=adm&ex2=pan3&id_cons='.$val_cons['ID_CONSULTATION'].'">Détails</a></td></tr>';
+                }
+                $tr .= '</tbody></table>';
+                $view = $tr; 
+            } else {
+            $titre = '<p><a href="../Php/index.php?ex=adm&ex2=pan3"><< Retour</a> | Ajouter une nouvelle consultation :</p>';
+            $view = $this-> showFormCons();
+            }
+        } else {
+            $_SESSION['adm']['id_rep'] = $_GET['id_cons'];
+            $titre = '<p><a href="../Php/index.php?ex=adm&ex2=pan3"><< Retour</a> | Détails de la consultation :</p>';
+            $view = $this-> showFormCons($_data);
+        }
 
 echo <<< HERE
 <div class="white callout">
@@ -276,13 +305,9 @@ echo <<< HERE
                 </div>
                 <div class="medium-9 columns">
                   <div class="tabs-content" data-tabs-content="example-tabs">
-HERE;
-        
-        
-echo <<< HERE
                     <div class="tabs-panel is-active" id="panel1v">
-                      <p>Tableau des consultations</p>
-                      <p>Check me out! I'm a super cool Tab panel with text content!</p>
+                      <p>$titre</p>
+                      $view  
                     </div>
                   </div>
                 </div>
@@ -296,9 +321,9 @@ HERE;
     public function showAdmAdmin($_data)
     {
         //debug($_data);
-        // Code html (vue) de la section 'administration' --->
+        /* Code html (vue) de la sous-section 'administration : gestion des administrateurs' ---> */
         $arg = 'admi';
-        $_SESSION['arg'] = $arg;
+        $_SESSION['adm']['arg'] = $arg;
         
 
 echo <<< HERE
@@ -323,10 +348,7 @@ echo <<< HERE
                 </div>
                 <div class="medium-9 columns">
                   <div class="tabs-content" data-tabs-content="example-tabs">
-HERE;
-        
-        
-echo <<< HERE
+
                     <div class="tabs-panel is-active" id="panel1v">
                       <p>Gestion des administrateurs</p>
                       <p>Check me out! I'm a super cool Tab panel with text content!</p>
@@ -339,6 +361,119 @@ echo <<< HERE
 HERE;
      
     }
+    
+    public function showFormCons($_data = null)
+    {
+        /* Code html (vue) de la sous-section 'administration : consultations' ---> */
+        $arg = 'cons';
+        $_SESSION['adm']['arg'] = $arg;
+        
+        /* Liste des animaux et construction du input type=select pour sélectionner l'animal (et son id_ pour insert)*/
+        $manimal = new MAnimal();
+        $animaux = $manimal-> SelectAll();
+        array_walk($animaux, 'strip_xss');
+        
+        $ani_opt = '';
+        foreach ($animaux as $val_anim) {
+            $ani_opt .= '<option value="'.$val_anim['ID_ANIMAL'].'">'.$val_anim['NOM_ANIMAL'].'</option>';
+        }
+        
+        if($_data) {
+            $naiss = ($_data[0]['SEXE'] == 'F')? 'née' : 'né';
+            $sexe = ($_data[0]['SEXE'] == 'F')? 'femelle' : 'mâle';
+            $animal = '<div class="white callout"><p><strong>'.$_data[0]['NOM_ANIMAL'].'</strong>, <em> '.$naiss.' le '.$_data[0]['DAY_NAISS'].'/'.$_data[0]['MONTH_NAISS'].'/'.$_data[0]['YEAR_NAISS'].'</em></p><p>'.$_data[0]['ESPECE'].' '.$sexe.' de race '.$_data[0]['RACE'].'</p></div>';
+            $poids = $_data[0]['POIDS'];
+            $motif = $_data[0]['MOTIF'];
+            $soins = $_data[0]['COMPTE_RENDU_SOINS'];
+            $date = '<div class="white callout"><p>Consultation du '.$_data[0]['DAY'].'/'.$_data[0]['MONTH'].'/'.$_data[0]['YEAR'].'</p></div>';
+            $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="warning button" href="../Php/index.php?ex=del">Supprimer la consultation</a></p></div></div>';
+            $action = 'ex=mod&ex2=pan3';
+        } else {
+            $animal = '<label for="animal">Animal</label><select name="animal">'.$ani_opt.'</select>';
+            $poids = '';
+            $motif = '';
+            $soins = '';
+            $date = '<label for="date_cons">Date de la consultation</label><input type="date" name="date_cons" id="date_cons" />';
+            $button = '<input class="button" type="submit" value="Enregistrer la consultation" />';
+            $action = 'ex=ins&ex2=pan3';
+        }
+        
+        /* Formulaire d'insertion / modification des consultations */
+        $form = '<form action="../Php/index.php?'.$action.'&ex2=pan3" method="post">  
+                        <p></p>
+                        <div class="grid-x grid-padding-x">
+                          <div class="large-4 medium-4 cell">
+                            '.$animal.'
+                          </div>
+                          <div class="large-4 medium-4 cell">
+                            <label for="poids">Poids (kg)</label>
+                            <input type="text" name="poids" id="poids" value="'.$poids.'" />
+                          </div>
+                          <div class="large-4 medium-4 cell">
+                            '.$date.'
+                          </div>
+                        </div>
+                        <label for="motif">Motif de la consultation, description des symptômes</label>
+                        <input type="text" name="motif" id="motif" placeholder="Motif, description" value="'.$motif.'" />
+                        <label for="soins">Compte-rendu de la consultation et/ou suivi des soins</label>
+                        <textarea name="soins" id="soins" placeholder="Compte-rendu, suivi et soins">'.$soins.'</textarea>
+                        <input type="hidden" value="'.$arg.'" name="arg" />
+                        '.$button.'
+                      </form>';
+        
+        /* Si $_data, ajout du formulaire d'insertion des actes */  
+        if ($_data) {
+            
+            $arg = 'acte';
+            
+            $_SESSION['adm']['id_cons'] = $_GET['id_cons'];
+            
+            $macte = new MActe();
+            $actes = $macte-> SelectActe($_data[0]['ID_CONSULTATION']);
+            array_walk($actes, 'strip_xss');
+            $nomenclature = $macte-> SelectAll();
+            array_walk($nomenclature, 'strip_xss');
+            if($actes) {
+                $_SESSION['adm']['arg'] = $arg;
+            }
+            
+            $act_opt = '';
+            foreach ($nomenclature as $val_act) {
+                $act_opt .= '<option value="'.$val_act['ID_NOMENCLATURE'].'">'.$val_act['CODE'].' : '.$val_act['DESCRIPTIF'].'</option>';
+            }
+            
+            $ls_actes = '<table><tbody>';
+            $total = 0;
+            foreach ($actes as $acte) {
+                $ls_actes .= '<tr><td>'.$acte['DESCRIPTIF'].'</td><td>'.$acte['TARIF'].' € TTC</td><td><a class="small alert button" href="../Php/index.php?ex=del&ex2=pan3&id_cons='.$acte['ID_CONSULTATION'].'&act='.$acte['ID_ACTE'].'">Supprimer</a></td></tr>';
+                $total += $acte['TARIF'];
+            }
+            $ls_actes .= '<tr><td class="text-right">TOTAL : </td><td>'.$total.' € TTC</td></tr></tbody></table>';
+            
+            $form .= '<hr />
+                      <form action="../Php/index.php?ex=ins&ex2=pan3&id_cons='.$_data[0]['ID_CONSULTATION'].'" method="post">
+                        <div class="grid-x grid-padding-x">
+                          <div class="large-12 medium-12 cell">
+                          <p>Actes effectués et facturation :</p>
+                            '.$ls_actes.'
+                          </div>
+                          <div class="large-6 medium-6 cell">
+                            <label for="actes">Ajouter un acte :</label>
+                            <select name="acte" id="acte">'
+                              .$act_opt.
+                            '</select>
+                          </div>
+                          <div class="large-2 medium-2 cell">
+                            <br /><input type="submit" class="button" value="Ajouter" />
+                          </div>
+                        </div>
+                        <input type="hidden" value="'.$arg.'" name="arg" />
+                        </form>';
+        }
+        
+        return $form;
+    }
+    
 }
 
 ?>    
