@@ -217,11 +217,11 @@ function insert() {
     
     /* Switch de l'argument $_POST['arg'] passé en champ hidden, en fonction du formulaire d'insertion utilisé, déterminant le modèle à appeler */
     switch($_POST['arg']){
-        case 'user': $retour = admin();
+        case 'user': $retour = 'ex=adm&ex2=pan2';
                      $mtable = new MClient(); break;
         case 'anim': $retour = admin();
                      $mtable = new MAnimal(); break;
-        case 'cons': $retour = admin();
+        case 'cons': $retour = 'ex=adm&ex2=pan3';
                      $_POST['id_veterinaire'] = $_SESSION['adm']['id'];
                      $mtable = new MConsultation(); break;
         case 'arti': $retour = admin();
@@ -237,7 +237,7 @@ function insert() {
     $mtable-> SetValue($_POST);
     $mtable-> Insert();
     
-    $retour;//test(); // == fonction précédente ou redirection
+    header('Location:../Php/index.php?'.$retour);
     
 }/*-- insert() */
 
@@ -249,13 +249,13 @@ function update() {
     
     /* Switch de l'argument $_POST['arg'] passé en champ hidden, en fonction du formulaire de modification utilisé, déterminant le modèle à appeler */
     switch($_POST['arg']){
-        case 'user': $retour = admin();
+        case 'user': $retour = 'ex=adm&ex2=pan2';
                      $mtable = new MClient(); break;
         case 'anim': $retour = admin();
                      $mtable = new MAnimal(); break;
-        case 'cons': $retour = admin();
+        case 'cons': $retour = 'ex=adm&ex2=pan3';
                      $mtable = new MConsultation($id_mod); break;
-        case 'arti': $retour = admin();
+        case 'arti': $retour = 'ex=adm';
                      $_POST['contenu'] = text_format();
                      $mtable = new MArticle($id_mod); break;
         case 'admi': $mtable = new MVeterinaire(); break;
@@ -264,7 +264,9 @@ function update() {
     
     $mtable-> SetValue($_POST);
     $mtable-> Update();
-    $retour;/* redirection, voir pour le gérer avec une variable de session */
+    
+    header('Location:../Php/index.php?'.$retour);
+    
 }/*-- update() */
 
 
@@ -293,16 +295,16 @@ function delete() {
     }
     
     switch($arg){
-        case 'user': $retour = admin();
+        case 'user': $retour = 'ex=adm&ex2=pan3';
                      $mtable = new MClient($id_del); break;
         case 'anim': $retour = admin();
                      $mtable = new MAnimal($id_del); break;
-        case 'cons': $retour = admin();
+        case 'cons': $retour = 'ex=adm&ex2=pan3';
                      $mtable = new MConsultation($id_del); break;
-        case 'arti': $retour = admin();
+        case 'arti': $retour = 'ex=adm';
                      $mtable = new MArticle($id_del); break;
-        case 'acte': $retour = admin();
-                     $mtable = new MActe($act); break;
+        case 'acte': $mtable = new MActe($act); 
+                     admin(); break;
         case 'admi': // verif si ce n'est pas l'admin principal sinon :
                      $mtable = new MVeterinaire($id_del); break;
         default : die(); break;
@@ -310,7 +312,7 @@ function delete() {
     
     $mtable-> Delete();
     
-    $retour; // == fonction précédente ou redirection
+    header('Location:../Php/index.php?'.$retour);
     
 }/*-- delete() */
 
@@ -363,6 +365,7 @@ function admin() {
                 $mconsultation = new MConsultation($_GET['id_cons']);
                 $data = $mconsultation-> Select();
             } else {
+                unset($_SESSION['adm']['id_cons']);
                 $mconsultation = new MConsultation();
                 $data = $mconsultation-> SelectAll();
             }

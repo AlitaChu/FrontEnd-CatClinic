@@ -387,7 +387,7 @@ HERE;
             $soins = $_data[0]['COMPTE_RENDU_SOINS'];
             $date = '<div class="white callout"><p>Consultation du '.$_data[0]['DAY'].'/'.$_data[0]['MONTH'].'/'.$_data[0]['YEAR'].'</p></div>';
             $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="warning button" href="../Php/index.php?ex=del">Supprimer la consultation</a></p></div></div>';
-            $action = 'ex=mod&ex2=pan3';
+            $action = 'mod';
         } else {
             $animal = '<label for="animal">Animal</label><select name="animal">'.$ani_opt.'</select>';
             $poids = '';
@@ -395,11 +395,11 @@ HERE;
             $soins = '';
             $date = '<label for="date_cons">Date de la consultation</label><input type="date" name="date_cons" id="date_cons" />';
             $button = '<input class="button" type="submit" value="Enregistrer la consultation" />';
-            $action = 'ex=ins&ex2=pan3';
+            $action = 'ins';
         }
         
         /* Formulaire d'insertion / modification des consultations */
-        $form = '<form action="../Php/index.php?'.$action.'&ex2=pan3" method="post">  
+        $form = '<form action="../Php/index.php?ex='.$action.'" method="post">  
                         <p></p>
                         <div class="grid-x grid-padding-x">
                           <div class="large-4 medium-4 cell">
