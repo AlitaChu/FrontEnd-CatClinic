@@ -24,9 +24,8 @@ else
     $_SESSION['LANG'] = 'FR';
 }/*-------------------fin langues----------------------*/
 
-debug($_SESSION);
+//debug($_SESSION);
 
-//require('../Inc/admin.inc.php');
     
 $EX = isset ($_REQUEST['ex']) ? $_REQUEST['ex'] : 'accueil';
 
@@ -172,47 +171,12 @@ function insert() {
     }
     
     //debug($_POST);
-    /* $_FILES = tabarray :
-     * $_FILES['image']['name'] -> nom du fichier initial
-     * $_FILES['image']['type'] -> type mime
-     * $_FILES['image']['tmp_name'] -> chemin du fichier temporaire
-     * $_FILES['image']['error'] -> s'il y a une erreur, à gérer!
-     * $_FILES['image']['size'] -> taille du fichier */
-    
     /* Teste s'il y a téléchargement d'une image : 
      * Vérifer 1. Attribut 'name' du form, 
                2. Présence de l'attribut enctype=" / ", 
                3.Vérifier init.php (si droit de télécharger) ainsi que le max upload */
-    if (isset($_FILES['image']) && $_FILES['image']['tmp_name'])
-    {
-        /* Récupère les nouveaux noms de fichiers après traitement par la fonction upload() : */
-        $filename_new = upload($_FILES['image']);
-        $filename_vignette_new = 'vignettes/' . $filename_new;
-        $filename_fullsize_new = 'fullsize/' . $filename_new;
-
-        /* Redimensionne les images en fullsize */
-        $fullsize_new = img_resize($_FILES['image']['tmp_name'], 450, 450);
-        /* Génère l'image fullsize $fullsizeimage_new vers le fichier $filename_new en fonctoin de son mime : */
-        switch ($_FILES['image']['type'])
-        {
-            case 'image/png'  : imagepng($fullsize_new, UPLOAD . $filename_fullsize_new, 0);  break;// 0 == compression minimum
-            case 'image/jpeg' : imagejpeg($fullsize_new, UPLOAD . $filename_fullsize_new, 100); break;// 100 == compression maximum
-            case 'image/gif'  : imagegif($fullsize_new, UPLOAD . $filename_fullsize_new);  break;
-        }/*-- finswitch */
-
-        /* Redimensionne l'image de la vignette : */
-        $vignette_new = img_resize($_FILES['image']['tmp_name'], 150, 150);
-        /* Génère l'image $image_new vers le fichier $file_new en fonction de son mime */
-        switch ($_FILES['image']['type'])
-        {
-            case 'image/png'  : imagepng($vignette_new, UPLOAD . $filename_vignette_new, 0);  break;// 0 == compression minimum
-            case 'image/jpeg' : imagejpeg($vignette_new, UPLOAD . $filename_vignette_new, 100); break;// 100 == compression maximum
-            case 'image/gif'  : imagegif($vignette_new, UPLOAD . $filename_vignette_new);  break;
-        }/*-- finswitch */
-
-        /* Ajoute au tableau $_POST la clef ['IMG'] avec le nom du fichier pour insertion dans la base */
-        $_POST['img'] = $filename_fullsize_new;
-        $_POST['img_vig'] = $filename_vignette_new;
+    if (isset($_FILES['image']) && $_FILES['image']['tmp_name']) {
+        set_image();
     }
     
     /* Switch de l'argument $_POST['arg'] passé en champ hidden, en fonction du formulaire d'insertion utilisé, déterminant le modèle à appeler */
@@ -224,10 +188,9 @@ function insert() {
         case 'cons': $retour = 'ex=adm&ex2=pan3';
                      $_POST['id_veterinaire'] = $_SESSION['adm']['id'];
                      $mtable = new MConsultation(); break;
-        case 'arti': $retour = admin();
-                     $_POST['contenu'] = text_format();
+        case 'arti': $retour = 'ex=adm';
                      $mtable = new MArticle(); break;
-        case 'acte': $retour = admin();
+        case 'acte': $retour = 'ex=adm&ex2=pan3&id_cons='.$_SESSION['adm']['id_cons'];
                      $_POST['id_cons'] = $_SESSION['adm']['id_cons'];
                      $mtable = new MActe(); break;
         case 'admi': $mtable = new MVeterinaire(); break;
@@ -256,7 +219,6 @@ function update() {
         case 'cons': $retour = 'ex=adm&ex2=pan3';
                      $mtable = new MConsultation($id_mod); break;
         case 'arti': $retour = 'ex=adm';
-                     $_POST['contenu'] = text_format();
                      $mtable = new MArticle($id_mod); break;
         case 'admi': $mtable = new MVeterinaire(); break;
         default : die(); break;
@@ -272,11 +234,19 @@ function update() {
 
 function delete() {
     
-    $id_del = isset($_SESSION['adm']['id_rep'])? $_SESSION['adm']['id_rep'] : '';
-    unset($_SESSION['adm']['id_rep']);
+    if(isset($_SESSION['adm']['id_rep'])) {
+        $id_del = $_SESSION['adm']['id_rep'];
+        unset($_SESSION['adm']['id_rep']);
+    } else {
+        $id_del = '';
+    }
     
-    $arg = $_SESSION['adm']['arg'];
-    unset($_SESSION['adm']['arg']);
+    if(isset($_SESSION['adm']['arg'])) {
+        $arg = $_SESSION['adm']['arg'];
+        unset($_SESSION['adm']['arg']);
+    } else {
+        $arg = '';
+    }
     
     if($arg == 'acte') {
         // mettre une erreur de suppression car consultation non-vide
@@ -303,8 +273,8 @@ function delete() {
                      $mtable = new MConsultation($id_del); break;
         case 'arti': $retour = 'ex=adm';
                      $mtable = new MArticle($id_del); break;
-        case 'acte': $mtable = new MActe($act); 
-                     admin(); break;
+        case 'acte': $retour = 'ex=adm&ex2=pan3&id_cons='.$_SESSION['adm']['id_cons']; 
+                     $mtable = new MActe($act); break;
         case 'admi': // verif si ce n'est pas l'admin principal sinon :
                      $mtable = new MVeterinaire($id_del); break;
         default : die(); break;
@@ -315,6 +285,47 @@ function delete() {
     header('Location:../Php/index.php?'.$retour);
     
 }/*-- delete() */
+
+function set_image() {
+    
+    /* $_FILES = tabarray :
+     * $_FILES['image']['name'] -> nom du fichier initial
+     * $_FILES['image']['type'] -> type mime
+     * $_FILES['image']['tmp_name'] -> chemin du fichier temporaire
+     * $_FILES['image']['error'] -> s'il y a une erreur, à gérer!
+     * $_FILES['image']['size'] -> taille du fichier */
+    
+    /* Récupère les nouveaux noms de fichiers après traitement par la fonction upload() : */
+    $filename_new = upload($_FILES['image']);
+    $filename_vignette_new = 'vignettes/' . $filename_new;
+    $filename_fullsize_new = 'fullsize/' . $filename_new;
+
+    /* Redimensionne les images en fullsize */
+    $fullsize_new = img_resize($_FILES['image']['tmp_name'], 450, 450);
+    /* Génère l'image fullsize $fullsizeimage_new vers le fichier $filename_new en fonctoin de son mime : */
+    switch ($_FILES['image']['type'])
+    {
+        case 'image/png'  : imagepng($fullsize_new, UPLOAD . $filename_fullsize_new, 0);  break;// 0 == compression minimum
+        case 'image/jpeg' : imagejpeg($fullsize_new, UPLOAD . $filename_fullsize_new, 100); break;// 100 == compression maximum
+        case 'image/gif'  : imagegif($fullsize_new, UPLOAD . $filename_fullsize_new);  break;
+    }/*-- finswitch */
+
+    /* Redimensionne l'image de la vignette : */
+    $vignette_new = img_resize($_FILES['image']['tmp_name'], 150, 150);
+    /* Génère l'image $image_new vers le fichier $file_new en fonction de son mime */
+    switch ($_FILES['image']['type'])
+    {
+        case 'image/png'  : imagepng($vignette_new, UPLOAD . $filename_vignette_new, 0);  break;// 0 == compression minimum
+        case 'image/jpeg' : imagejpeg($vignette_new, UPLOAD . $filename_vignette_new, 100); break;// 100 == compression maximum
+        case 'image/gif'  : imagegif($vignette_new, UPLOAD . $filename_vignette_new);  break;
+    }/*-- finswitch */
+
+    /* Ajoute au tableau $_POST la clef ['IMG'] avec le nom du fichier pour insertion dans la base */
+    $_POST['img'] = $filename_fullsize_new;
+    $_POST['img_vig'] = $filename_vignette_new;
+    
+    
+}/*-- set_image() */
 
 
 /* --------------------------------------------------------------
