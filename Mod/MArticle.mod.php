@@ -49,8 +49,36 @@ class MArticle
         return;
     }
     
+    public function Update()
+    {
+        $img = isset($this->value['img'])? ', VIGNETTE = :VIGNETTE,
+    		      IMAGE = :IMAGE' : '';
+        
+        $query = 'update articles
+    		      set TITRE_ARTICLE = :TITRE_ARTICLE,
+    		      DESCRIPTION = :DESCRIPTION,
+    		      IMG_ALT = :IMG_ALT,
+    		      DATE_ARTICLE = NOW(),
+    		      ID_CATEGORIE = :ID_CATEGORIE
+                  '.$img.'
+    		      where ID_ARTICLE = :ID_ARTICLE';
+
+        $result = $this->conn->prepare($query);
+
+        $result->bindValue(':TITRE_ARTICLE', $this->value['titre'], PDO::PARAM_STR);
+        $result->bindValue(':DESCRIPTION', $this->value['contenu'], PDO::PARAM_STR);
+        $result->bindValue(':IMG_ALT', $this->value['alt'], PDO::PARAM_STR);
+        $result->bindValue(':ID_CATEGORIE',$this->value['categorie'], PDO::PARAM_INT);
+        $result->bindValue(':ID_ARTICLE',$this->id_article, PDO::PARAM_STR);
+    
+        $result->execute();
+   
+        return;
+  
+    } // Update()
+    
     //A voir si utilisé.......
-    public function SelectAll()
+    /*public function SelectAll()
     {
         $query = 'select ID_ARTICLE, TITRE_ARTICLE, DESCRIPTION, VIGNETTE, IMAGE, IMG_ALT, DAY(DATE_ARTICLE) as DAY, MONTH(DATE_ARTICLE) as MONTH, YEAR(DATE_ARTICLE) as YEAR, art.ID_CATEGORIE 
                   from articles art, categories cat
@@ -63,7 +91,7 @@ class MArticle
         $result->execute(); //or die ($this->Error($result));
         
         return $result->fetchAll();
-    }
+    }*/
     
     /* Méthode SelectAll() allégée, pour éviter de ramener le gros texte contenu inutile pour les pages de sélection des articles */
     public function SelectAllResume($_id_categorie)

@@ -49,6 +49,16 @@ class VAdmin
             $button = '<input class="button" type="submit" value="Modifier l\'article" /><p><a class="warning button" href="../Php/index.php?ex=del">Supprimer l\'article</a></p>';
             $action = 'mod';
         }
+        
+        $options = '';
+        $mcat = new MCategorie();
+        $ls = $mcat-> SelectCat();
+  	    foreach ($ls as $val)
+  	    {
+            $selected = ((isset($_GET['id_art']) && $val['ID_CATEGORIE'] == $_GET['id_cat'])) ? ' selected="selected"' : '';
+  	  
+  	        $options .= '<option value="' . $val['ID_CATEGORIE'].'"'. $selected.'>'.$val['TITRE_CATEGORIE'].'</option>';
+  	    }
 
 echo <<< HERE
 <div class="white callout">
@@ -84,9 +94,10 @@ echo <<< HERE
                           <div class="large-3 medium-3 cell">
                             <label for="categorie">Catégorie</label>
                             <select name="categorie">
-                              <option value="2">Fiches conseils</option>
+                              $options
+                              <!--<option value="2">Fiches conseils</option>
                               <option value="1">Nos spécialités</option>
-                              <option value="3">L'actu de la clinique</option>
+                              <option value="3">L'actu de la clinique</option>-->
                             </select>
                           </div>
                           <div class="large-4 medium-4 cell">
