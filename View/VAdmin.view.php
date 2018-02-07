@@ -42,7 +42,7 @@ class VAdmin
         }else{
             $_SESSION['adm']['id_rep'] = $_GET['id_art'];
             $img_alt = $_data[0]['IMG_ALT'];
-            $img = '';
+            $img = '<img src="../img/'.$_data[0]['VIGNETTE'].'" alt=""  />';
             $titre = $_data[0]['TITRE_ARTICLE'];
             $contenu = $_data[0]['DESCRIPTION'];
             $modif = 'Modifier l\'article : <em>(Dernière modification le '.$_data[0]['DAY'].'/'.$_data[0]['MONTH'].'/'.$_data[0]['YEAR'].')</em>';
@@ -81,7 +81,7 @@ echo <<< HERE
                       <form action="../Php/index.php?ex=$action" method="post" enctype="multipart/form-data">  
                         <p>$modif</p>
                         <div class="grid-x grid-padding-x">
-                          <div class="large-4 medium-4 cell">
+                          <div class="large-3 medium-3 cell">
                             <label for="categorie">Catégorie</label>
                             <select name="categorie">
                               <option value="2">Fiches conseils</option>
@@ -93,10 +93,17 @@ echo <<< HERE
                             <label for="alt">Description de l'image</label>
                             <input type="text" name="alt" id="alt"  value="$img_alt" placeholder="Description de l'image" />
                           </div>
-                          <div class="large-4 medium-4 cell">
-                            <label for="image">Image</label>
-                            <input type="hidden" name="fichier_old" value="" />
-                            <input id="fichier" type="file" name="image" value="" size="150" maxlength="40" />
+                          <div class="large-5 medium-5 cell">
+                            <div class="grid-x grid-padding-x">
+                              <div class="large-9 medium-9 cell">
+                                <label for="image">Image</label>
+                                <input type="hidden" name="fichier_old" value="" />
+                                <input id="fichier" type="file" name="image" value="" size="150" maxlength="40" />
+                              </div>
+                              <div class="large-3 medium-3 cell">
+                                $img
+                              </div>
+                            </div>  
                           </div>
                         </div>
                         <label for="titre">Titre</label>
@@ -386,7 +393,7 @@ HERE;
             $motif = $_data[0]['MOTIF'];
             $soins = $_data[0]['COMPTE_RENDU_SOINS'];
             $date = '<div class="white callout"><p>Consultation du '.$_data[0]['DAY'].'/'.$_data[0]['MONTH'].'/'.$_data[0]['YEAR'].'</p></div>';
-            $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="warning button" href="../Php/index.php?ex=del">Supprimer la consultation</a></p></div></div>';
+            $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="alert button" href="../Php/index.php?ex=del">Supprimer la consultation</a></p></div></div>';
             $action = 'mod';
         } else {
             $animal = '<label for="animal">Animal</label><select name="animal">'.$ani_opt.'</select>';
