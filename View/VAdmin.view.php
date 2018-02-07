@@ -74,7 +74,7 @@ echo <<< HERE
               <div class="grid-x grid-padding-x collapse">
                 <div class="medium-3 cell">
                   <ul class="vertical tabs" data-tabs id="example-tabs">
-                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan1" aria-selected="true">Général</a></li>
+                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
@@ -93,11 +93,8 @@ echo <<< HERE
                         <div class="grid-x grid-padding-x">
                           <div class="large-3 medium-3 cell">
                             <label for="categorie">Catégorie</label>
-                            <select name="categorie">
+                            <select name="categorie" id="categorie">
                               $options
-                              <!--<option value="2">Fiches conseils</option>
-                              <option value="1">Nos spécialités</option>
-                              <option value="3">L'actu de la clinique</option>-->
                             </select>
                           </div>
                           <div class="large-4 medium-4 cell">
@@ -109,7 +106,7 @@ echo <<< HERE
                               <div class="large-9 medium-9 cell">
                                 <label for="image">Image</label>
                                 <input type="hidden" name="fichier_old" value="" />
-                                <input id="fichier" type="file" name="image" value="" size="150" maxlength="40" />
+                                <input id="image" type="file" name="image" size="150" />
                               </div>
                               <div class="large-3 medium-3 cell">
                                 $img
@@ -119,18 +116,26 @@ echo <<< HERE
                         </div>
                         <label for="titre">Titre</label>
                         <input type="text" name="titre" id="titre" placeholder="Titre de l'article" value="$titre" />
-                        <label for="sstitre1">Sous-titre (opt.)</label>
-                        <input type="text" name="sstitre1" id="sstitre1" placeholder="Sous-titre (optionnel)" />
-                        <label for="parag1">Paragraphe</label>
-                        <textarea name="parag1" id="parag1" placeholder="Paragraphe">$contenu</textarea>
-                        <label for="sstitre2">Sous-titre 2 (opt.)</label>
-                        <input type="text" name="sstitre2" id="sstitre2" placeholder="Sous-titre 2 (optionnel)" />
-                        <label for="parag2">Paragraphe 2 (opt.)</label>
-                        <textarea name="parag2" id="parag2" placeholder="Paragraphe 2 (optionnel)"></textarea>
-                        <label for="sstitre3">Sous-titre 3 (opt.)</label>
-                        <input type="text" name="sstitre3" id="sstitre3" placeholder="Sous-titre 3 (optionnel)" />
-                        <label for="parag3">Paragraphe 3 (opt.)</label>
-                        <textarea name="parag3" id="parag3" placeholder="Paragraphe 3 (optionnel)"></textarea>
+                        <div class="grid-x grid-padding-x">
+                          <div class="large-8 medium-8 cell">
+                            <label for="contenu">Paragraphe</label>
+                            <textarea rows="15" name="contenu" id="contenu" placeholder="Contenu de l'article">$contenu</textarea>
+                          </div>  
+                          <div class="large-4 medium-4 cell">
+                            <p>Balises utilisables :<br/>
+                              <ul>
+                                <li>Ajouter un sous-titre: 
+                                <xmp><h3>Mon sous-titre</h3></xmp></li>
+                                <li>Ajouter un paragraphe:<xmp><p>Contenu (texte) de mon paragraphe...</p></xmp></li>
+                                <li>Ajouter une liste:<xmp><ul>
+  <li>Premier élément de la liste</li>
+  <li>Second élément... etc..</li>
+</ul></xmp></li>
+                                <li>Ajouter une liste ordonnée numérotée):<xmp><ol></ol></xmp></li>
+                              </ul>
+                          </div>
+                        </div>
+                        
                         <input type="hidden" value="$arg" name="arg" />
                         $button
                       </form>  
@@ -181,7 +186,7 @@ echo <<< HERE
                 <div class="medium-3 cell">
                   <ul class="vertical tabs" data-tabs id="example-tabs">
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
-                    <li class="tabs-title is-active" aria-selected="true"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
+                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
                   </ul>
@@ -317,7 +322,7 @@ echo <<< HERE
                   <ul class="vertical tabs" data-tabs id="example-tabs">
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
-                    <li class="tabs-title is-active" aria-selected="true"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
+                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
                   </ul>
                 </div>
@@ -361,7 +366,7 @@ echo <<< HERE
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
-                    <li class="tabs-title is-active" aria-selected="true"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
+                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
                   </ul>
                 </div>
                 <div class="medium-9 columns">
