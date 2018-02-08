@@ -343,10 +343,19 @@ HERE;
     
     public function showAdmAdmin($_data)
     {
-        //debug($_data);
         /* Code html (vue) de la sous-section 'administration : gestion des administrateurs' ---> */
         $arg = 'admi';
         $_SESSION['adm']['arg'] = $arg;
+        
+        $tr = '';
+        foreach ($_data as $val_vet) {
+                $equipe = ($val_vet['IS_VISIBLE'] == true)? 'OUI' : 'NON';
+                $admin = ($val_vet['IS_ADMIN'] == true)? 'OUI' : 'NON';
+            
+                $tr .= '<tr><td>'.$val_vet['NOM'].'</td><td>'.$val_vet['PRENOM'].'</td><td>'.$val_vet['EMAIL'].'</td><td>'.$val_vet['FONCTION'].'</td>
+                <td>'.$equipe.'</td>
+                <td>'.$admin.'</td><td><a href="../Php/index.php?ex=adm&ex2=pan2&id_cli='.$val_vet['ID_VETERINAIRE'].'">Détails</a></td></tr>';
+        }
         
 
 echo <<< HERE
@@ -373,8 +382,23 @@ echo <<< HERE
                   <div class="tabs-content" data-tabs-content="example-tabs">
 
                     <div class="tabs-panel is-active" id="panel1v">
-                      <p>Gestion des administrateurs</p>
-                      <p>Check me out! I'm a super cool Tab panel with text content!</p>
+                      <h3>Gestion des administrateurs</h3>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th width="120">Nom</th>
+                            <th width="120">Prénom</th>
+                            <th width="120">Email</th>
+                            <th width="100">Fonction</th>
+                            <th width="100">Membre de l'équipe</th>
+                            <th width="100">Administrateur</th>
+                            <th>Ajout et détails compte</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          $tr  
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
