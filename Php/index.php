@@ -116,18 +116,28 @@ function conseils() {
     
     $id = 2; // a remplacer par $_GET['idcat'] ou array
     
-    $marticle = new MArticle();
-    $data = $marticle-> SelectResume($id);
+    if(!isset($_GET['id']))
+    {
+        $method = 'showConseils';
+        $marticle = new MArticle();
+        $data = $marticle-> SelectAllResume($id);
+    } else
+    {
+        $method = 'showDetailsCons';
+        $marticle = new MArticle($_GET['id']);
+        $data = $marticle-> Select();
+    }
     array_walk($data, 'strip_xss');
+    
     
     $content['title'] = 'Cat Clinic - Conseils pour votre animal';
     $content['description'] = ' ... ';
     $content['keywords'] = '';
     $content['author'] = 'Lambert Nathaelle';
     
-    $content['class'] = 'VHtml';
-    $content['method'] = 'showConseils';
+    $content['class'] = 'VConseils';
     
+    $content['method'] = $method;
     $content['arg'] = $data;
     
     return;
