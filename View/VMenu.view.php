@@ -50,9 +50,9 @@ class VMenu
                     <li class="has-submenu">
                       <a href="../Php/index.php?ex=inf">Infos pratiques</a>
                       <ul class="submenu menu vertical" data-submenu>
-                        <li><a href="#">One</a></li>
-                        <li><a href="#">Two</a></li>
-                        <li><a href="#">Three</a></li>
+                        <li><a href="#">L'équipe</a></li>
+                        <li><a href="#">Les horaires</a></li>
+                        <li><a href="#">Nous trouver</a></li>
                       </ul>
                     </li>
                     <li><a href="#">Nous contacter</a></li>
