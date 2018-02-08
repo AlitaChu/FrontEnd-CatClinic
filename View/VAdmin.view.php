@@ -75,9 +75,9 @@ echo <<< HERE
                 <div class="medium-3 cell">
                   <ul class="vertical tabs" data-tabs id="example-tabs">
                     <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Gestion Clientèle / Animaux</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Consultations et détails Facturation</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion Equipe / Administrateurs</a></li>
                   </ul>
                 </div>
                 <div class="medium-9 cell">
@@ -158,19 +158,39 @@ HERE;
     public function showAdmClients($_data)
     {
         /* Code html (vue) de la sous-section 'administration : gestion de la clientèle' ---> */
-        $arg = 'user';
-        $_SESSION['adm']['arg'] = $arg;
         
-        // à modifier avec le bon id_client!!!! à la place du 2!!!!
-        $manimal = new MAnimal();
-        $data_anim = $manimal-> Select(2);
-        array_walk($data_anim, 'strip_xss');
-        
-        $tr = '';
-        foreach ($_data as $val_cli) {
-                $tr .= '<tr><td>'.$val_cli['NOM'].'</td><td>'.$val_cli['PRENOM'].'</td><td>'.$val_cli['ADRESSE'].'</td><td>'.$val_cli['TELEPHONE'].'</td><td>'.$val_cli['EMAIL'].'</td><td><a href="../Php/index.php?ex=adm&ex2=pan2&id_cli='.$val_cli['ID_CLIENT'].'">Détails</a></td></tr>';
+        if(!isset($_GET['id_cli'])) {
+            if (!isset($_GET['form'])) {
+                unset($_SESSION['adm']['id_rep']);
+                $titre = '<p><a href="../Php/index.php? ex=adm&ex2=pan2&form=true" class="button">Ajouter un nouveau client</a></p>
+                          <h3>Liste des clients :</h3>';
+                $tr = '<table>
+                        <thead>
+                          <tr>
+                            <th width="120">Nom</th>
+                            <th width="120">Prénom</th>
+                            <th width="120">Adresse</th>
+                            <th width="100">Téléphone</th>
+                            <th>Email</th>
+                            <th>Ajout et détails animaux</th>
+                          </tr>
+                        </thead>
+                        <tbody>';
+                foreach ($_data as $val_client) {
+                    $tr .= '<tr><td>'.$val_client['NOM'].'</td><td>'.$val_client['PRENOM'].'</td><td>'.$val_client['ADRESSE'].'</td><td>'.$val_client['TELEPHONE'].'</td><td>'.$val_client['EMAIL'].'</td><td><a href="../Php/index.php?ex=adm&ex2=pan2&id_cli='.$val_client['ID_CLIENT'].'">Détails</a></td></tr>';
+                }
+                $tr .= '</tbody></table>';
+                $view = $tr; 
+            } else {
+            $titre = '<p><a href="../Php/index.php?ex=adm&ex2=pan2"><< Retour</a> | Ajouter un  nouveau client :</p>';
+            $view = $this-> showFormClient();
+            }
+        } else {
+            $_SESSION['adm']['id_rep'] = $_GET['id_cli'];
+            $titre = '<p><a href="../Php/index.php?ex=adm&ex2=pan2"><< Retour</a> | Informations client :</p>';
+            $view = $this-> showFormClient($_data);
         }
-
+        
 echo <<< HERE
 <div class="white callout">
             <div class="grid-container">
@@ -186,33 +206,65 @@ echo <<< HERE
                 <div class="medium-3 cell">
                   <ul class="vertical tabs" data-tabs id="example-tabs">
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
-                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
+                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan2">Gestion Clientèle / Animaux</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Consultations et détails Facturation</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion Equipe / Administrateurs</a></li>
                   </ul>
                 </div>
                 <div class="medium-9 cell">
                   <div class="tabs-content" data-tabs-content="example-tabs">
-HERE;
-        
-        
-echo <<< HERE
+
                     <div class="tabs-panel is-active" id="panel1v">
-                      <h3>Informations clientèle</h3>
-                      <p>Ajouter un nouveau client :</p>
-                      <form action="../Php/index.php?ex=ins" method="post">
+                      <p>$titre</p>
+                      $view 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+HERE;
+     
+    }
+    
+    public function showFormClient($_data = null)
+    {
+        /* Code html (vue) du formulaire 'administration : gestion clientèle' ---> */
+        $arg = 'user';
+        $_SESSION['adm']['arg'] = $arg;
+        
+        if($_data) {
+            $nom = $_data[0]['NOM'];
+            $prenom = $_data[0]['PRENOM'];
+            $email = $_data[0]['EMAIL'];
+            $adresse = $_data[0]['ADRESSE'];
+            $tel = $_data[0]['TELEPHONE'];
+            $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="alert button" href="../Php/index.php?ex=del">Supprimer le client</a></p></div></div>';
+            $action = 'mod';
+        } else {
+            $nom = '';
+            $prenom = '';
+            $email = '';
+            $adresse = '';
+            $tel = '';
+            $button = '<input class="button" type="submit" value="Enregistrer le client" />';
+            $action = 'ins';
+        }
+        
+        /* Formulaire d'insertion / modification des clients */
+        $form = '<form action="../Php/index.php?ex='.$action.'" method="post">
                         <div class="grid-x grid-padding-x">
                           <div class="medium-4 cell">
                             <label>Nom :</label>
-                            <input type="text" name="nom" id="nom" placeholder="Nom" />
+                            <input type="text" name="nom" id="nom" value="'.$nom.'" placeholder="Nom" />
                           </div>
                           <div class="medium-4 cell">
                             <label>Prénom :</label>
-                            <input type="text" name="prenom" id="prenom" placeholder="Prénom" />
+                            <input type="text" name="prenom" id="prenom" value="'.$prenom.'" placeholder="Prénom" />
                           </div> 
                           <div class="medium-4 cell">
                             <label>EMail :</label>
-                            <input type="text" name="email" id="email" placeholder="Email" />
+                            <input type="text" name="email" id="email" value="'.$email.'" placeholder="Email" />
                           </div>
                           <div class="medium-8 cell">
                             <label>Adresse :</label>
@@ -232,39 +284,56 @@ echo <<< HERE
                             <input type="password" name="passwd2" id="passwd2" placeholder="Retaper le mot de passe"/>
                           </div>
                           <div class="medium-12 cell">
-                            <input class="button" type="submit" value="Ajouter" />
+                            '.$button.'
                           </div>
                         </div>          
-                      </form>
-                      <hr/>
-                      <p>Liste des clients :</p>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th width="120">Nom</th>
-                            <th width="120">Prénom</th>
-                            <th width="120">Adresse</th>
-                            <th width="100">Téléphone</th>
-                            <th>Email</th>
-                            <th>Ajout et détails animaux</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          $tr  
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="tabs-panel" id="panel3v">
-                      <p>Tableau des consultations</p>
-                      <p>Check me out! I'm a super cool Tab panel with text content!</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-HERE;
-     
+                      </form>';
+        
+        /* Si $_data, ajout du formulaire d'insertion des animaux */  
+        if ($_data) {
+            
+            $arg = 'anim';
+            
+            $_SESSION['adm']['id_client'] = $_GET['id_cli'];
+            
+            $manimal = new MAnimal();
+            $animaux = $manimal-> Select($_data[0]['ID_CLIENT']);
+            array_walk($animaux, 'strip_xss');
+            
+            if($animaux) {
+                $_SESSION['adm']['arg'] = $arg;
+            }
+            
+            $ls_anim = '<table><tbody>';
+            $total = 0;
+            foreach ($animaux as $animal) {
+                $sexe = ($animal['SEXE'] == 'M')? 'mâle' : 'femelle';
+                $naiss = ($animal['SEXE'] == 'M')? 'né' : 'née';
+                $ls_anim .= '<tr><td><strong>'.$animal['NOM'].'</strong></td><td>'.$animal['ESPECE'].' '.$sexe.'</td><td>De race '.$animal['RACE'].'</td>
+                <td>'.$naiss.' le '.$animal['DAY'].'/'.$animal['MONTH'].'/'.$animal['YEAR'].'</td>
+                <td><a class="small alert button" href="../Php/index.php?ex=del&ex2=pan2&id_cli='.$animal['ID_CLIENT'].'&ani='.$animal['ID_ANIMAL'].'">Supprimer</a></td></tr>';
+            }
+            $ls_anim .= '</tbody></table>';
+            
+            $form .= '<hr />
+                      <form action="../Php/index.php?ex=ins&ex2=pan2&id_cli='.$_data[0]['ID_CLIENT'].'" method="post">
+                        <div class="grid-x grid-padding-x">
+                          <div class="large-12 medium-12 cell">
+                          <h3>Animaux enregistrés :</h3>
+                            '.$ls_anim.'
+                          </div>
+                          <div class="large-6 medium-6 cell">
+                            <label for="actes">Ajouter un acte :</label>
+                          </div>
+                          <div class="large-2 medium-2 cell">
+                            <br /><input type="submit" class="button" value="Ajouter" />
+                          </div>
+                        </div>
+                        <input type="hidden" value="'.$arg.'" name="arg" />
+                        </form>';
+        }
+        
+        return $form;
     }
     
     public function showAdmConsultations($_data)
@@ -275,7 +344,7 @@ HERE;
             if (!isset($_GET['form'])) {
                 unset($_SESSION['adm']['id_rep']);
                 $titre = '<p><a href="../Php/index.php? ex=adm&ex2=pan3&form=true" class="button">Nouvelle consultation</a></p>
-                          <p>Tableau des consultations :</p>';
+                          <h3>Tableau des consultations :</h3>';
                 $tr = '<table>
                           <thead>
                               <tr>
@@ -321,9 +390,9 @@ echo <<< HERE
                 <div class="medium-3 cell">
                   <ul class="vertical tabs" data-tabs id="example-tabs">
                     <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
-                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Gestion Clientèle / Animaux</a></li>
+                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan3">Consultations et détails Facturation</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion Equipe / Administrateurs</a></li>
                   </ul>
                 </div>
                 <div class="medium-9 columns">
@@ -341,77 +410,9 @@ HERE;
      
     }
     
-    public function showAdmAdmin($_data)
-    {
-        /* Code html (vue) de la sous-section 'administration : gestion des administrateurs' ---> */
-        $arg = 'admi';
-        $_SESSION['adm']['arg'] = $arg;
-        
-        $tr = '';
-        foreach ($_data as $val_vet) {
-                $equipe = ($val_vet['IS_VISIBLE'] == true)? 'OUI' : 'NON';
-                $admin = ($val_vet['IS_ADMIN'] == true)? 'OUI' : 'NON';
-            
-                $tr .= '<tr><td>'.$val_vet['NOM'].'</td><td>'.$val_vet['PRENOM'].'</td><td>'.$val_vet['EMAIL'].'</td><td>'.$val_vet['FONCTION'].'</td>
-                <td>'.$equipe.'</td>
-                <td>'.$admin.'</td><td><a href="../Php/index.php?ex=adm&ex2=pan2&id_cli='.$val_vet['ID_VETERINAIRE'].'">Détails</a></td></tr>';
-        }
-        
-
-echo <<< HERE
-<div class="white callout">
-            <div class="grid-container">
-              <div class="grid-x grid-padding-x">
-                <div class="large-3 medium-6 small-12 cell">
-                  <h2>Administration</h2> 
-                </div> 
-                <div class="large-9 medium-6 small-12 cell">
-                  <hr/> 
-                </div> 
-              </div>
-              <div class="grid-x grid-padding-x collapse">
-                <div class="medium-3 cell">
-                  <ul class="vertical tabs" data-tabs id="example-tabs">
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Informations clientèle</a></li>
-                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Détails consultations</a></li>
-                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion administrateurs</a></li>
-                  </ul>
-                </div>
-                <div class="medium-9 columns">
-                  <div class="tabs-content" data-tabs-content="example-tabs">
-
-                    <div class="tabs-panel is-active" id="panel1v">
-                      <h3>Gestion des administrateurs</h3>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th width="120">Nom</th>
-                            <th width="120">Prénom</th>
-                            <th width="120">Email</th>
-                            <th width="100">Fonction</th>
-                            <th width="100">Membre de l'équipe</th>
-                            <th width="100">Administrateur</th>
-                            <th>Ajout et détails compte</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          $tr  
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-HERE;
-     
-    }
-    
     public function showFormCons($_data = null)
     {
-        /* Code html (vue) de la sous-section 'administration : consultations' ---> */
+        /* Code html (vue) du formulaire 'administration : consultations' ---> */
         $arg = 'cons';
         $_SESSION['adm']['arg'] = $arg;
         
@@ -447,7 +448,6 @@ HERE;
         
         /* Formulaire d'insertion / modification des consultations */
         $form = '<form action="../Php/index.php?ex='.$action.'" method="post">  
-                        <p></p>
                         <div class="grid-x grid-padding-x">
                           <div class="large-4 medium-4 cell">
                             '.$animal.'
@@ -520,6 +520,76 @@ HERE;
         
         return $form;
     }
+    
+    public function showAdmAdmin($_data)
+    {
+        /* Code html (vue) de la sous-section 'administration : gestion des administrateurs' ---> */
+        $arg = 'admi';
+        $_SESSION['adm']['arg'] = $arg;
+        
+        $tr = '';
+        foreach ($_data as $val_vet) {
+                $equipe = ($val_vet['IS_VISIBLE'] == true)? 'OUI' : 'NON';
+                $admin = ($val_vet['IS_ADMIN'] == true)? 'OUI' : 'NON';
+            
+                $tr .= '<tr><td>'.$val_vet['NOM'].'</td><td>'.$val_vet['PRENOM'].'</td><td>'.$val_vet['EMAIL'].'</td><td>'.$val_vet['FONCTION'].'</td>
+                <td>'.$equipe.'</td>
+                <td>'.$admin.'</td><td><a href="../Php/index.php?ex=adm&ex2=pan2&id_cli='.$val_vet['ID_VETERINAIRE'].'">Détails</a></td></tr>';
+        }
+        
+
+echo <<< HERE
+<div class="white callout">
+            <div class="grid-container">
+              <div class="grid-x grid-padding-x">
+                <div class="large-3 medium-6 small-12 cell">
+                  <h2>Administration</h2> 
+                </div> 
+                <div class="large-9 medium-6 small-12 cell">
+                  <hr/> 
+                </div> 
+              </div>
+              <div class="grid-x grid-padding-x collapse">
+                <div class="medium-3 cell">
+                  <ul class="vertical tabs" data-tabs id="example-tabs">
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan1">Général</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan2">Gestion Clientèle / Animaux</a></li>
+                    <li class="tabs-title"><a href="../Php/index.php?ex=adm&ex2=pan3">Consultations et détails Facturation</a></li>
+                    <li class="tabs-title is-active"><a href="../Php/index.php?ex=adm&ex2=pan4">Gestion Equipe / Administrateurs</a></li>
+                  </ul>
+                </div>
+                <div class="medium-9 columns">
+                  <div class="tabs-content" data-tabs-content="example-tabs">
+
+                    <div class="tabs-panel is-active" id="panel1v">
+                      <h3>Gestion des administrateurs</h3>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th width="120">Nom</th>
+                            <th width="120">Prénom</th>
+                            <th width="120">Email</th>
+                            <th width="100">Fonction</th>
+                            <th width="100">Membre de l'équipe</th>
+                            <th width="100">Administrateur</th>
+                            <th>Ajout et détails compte</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          $tr  
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+HERE;
+     
+    }
+    
+    
     
 }
 
