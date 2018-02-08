@@ -394,11 +394,17 @@ function admin() {
             return $data;    
         }
     
-        /* Panel 1 : Gestion des administrateurs */
+        /* Panel 4 : Gestion des administrateurs */
         function panel4() {
-        
-        //array_walk($data, 'strip_xss');
-        //return $data;    
+            if(isset($_GET['id_veto'])) {
+                $mveterinaire = new MVeterinaire($_GET['id_veto']);
+                $data = $mveterinaire-> Select();
+            } else {
+                $mveterinaire = new MVeterinaire();
+                $data = $mveterinaire-> SelectAll();
+            }
+        array_walk($data, 'strip_xss');
+        return $data;    
         }
     
         $content['title'] = 'Cat Clinic - Panneau d\'administration';
