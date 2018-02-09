@@ -276,7 +276,7 @@ HERE;
                           </div>
                           <div class="medium-8 cell">
                             <label for="adresse">Adresse :</label>
-                            <input type="text" name="adresse" id="adresse" value="'.$adresse.'" placeholder="Adresse" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-]{1,99999})$"/>
+                            <input type="text" name="adresse" id="adresse" value="'.$adresse.'" placeholder="Adresse" required pattern="([a-zA-Z0-9\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
                             <span class="form-error">Champ incorrect.</span>
                           </div>
                           <div class="medium-4 cell">
@@ -332,7 +332,10 @@ HERE;
             }
             
             $form .= '<hr />
-                      <form action="../Php/index.php?ex=ins" method="post">
+                      <form data-abide novalidate action="../Php/index.php?ex=ins" method="post">
+                        <div data-abide-error class="alert callout" style="display: none;">
+                          <p><i class="fi-alert"></i> Il y a des erreurs dans votre formulaire, veuillez vérifier et corriger.</p>
+                        </div>
                         <div class="grid-x grid-padding-x">
                           <div class="large-12 medium-12 cell">
                           <h3>Animaux enregistrés :</h3>
@@ -341,30 +344,30 @@ HERE;
                           </div>
                           <div class="large-4 medium-4 cell">
                             <label for="nom_animal">Nom de l\'animal</label>
-                            <input type="text" name="nom_animal" id="nom_animal" placeholder="Nom de l\'animal" />
+                            <input type="text" name="nom_animal" id="nom_animal" placeholder="Nom de l\'animal" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
                           </div>
                           <div class="large-4 medium-4 cell">
                             <label for="espece">Espece</label>
-                            <input type="text" name="espece" id="espece" placeholder="ex: Chat, Tigre, Lynx..." />
+                            <input type="text" name="espece" id="espece" placeholder="ex: Chat, Tigre, Lynx..." required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
                           </div>
                           <div class="large-4 medium-4 cell">
                             <label for="race">Race de l\'animal</label>
-                            <input type="text" name="race" id="race" placeholder="Race de l\'animal" />
+                            <input type="text" name="race" id="race" placeholder="Race de l\'animal" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$/">
                           </div>
                           <div class="large-4 medium-4 cell">
                             <label>Sexe de l\'animal</label>
                             <input type="radio" name="sexe" value="M" id="male">
                             <label for="male">Mâle</label>
-                            <input type="radio" name="sexe" value="F" id="femelle">
+                            <input type="radio" name="sexe" value="F" id="femelle" required>
                             <label for="femelle">Femelle</label>
                           </div>
                           <div class="large-4 medium-4 cell">
                             <label for="date_naiss">Né(e) le</label>
-                            <input type="date" name="date_naiss" id="date_naiss">
+                            <input type="date" name="date_naiss" id="date_naiss" required pattern="date">
                           </div>
                           <div class="large-12 medium-12 cell">
                           <input type="hidden" value="'.$arg.'" name="arg" />
-                            <br /><input type="submit" class="button" value="Ajouter" />
+                          <br /><input type="submit" class="button" value="Ajouter" />
                           </div>
                         </div>
                         </form>';
