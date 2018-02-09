@@ -558,10 +558,11 @@ HERE;
         foreach ($_data as $val_vet) {
                 $equipe = ($val_vet['IS_VISIBLE'] == true)? 'OUI' : 'NON';
                 $admin = ($val_vet['IS_ADMIN'] == true)? 'OUI' : 'NON';
-            
                 $tr .= '<tr><td>'.$val_vet['NOM'].'</td><td>'.$val_vet['PRENOM'].'</td><td>'.$val_vet['EMAIL'].'</td><td>'.$val_vet['FONCTION'].'</td>
                 <td>'.$equipe.'</td>
                 <td>'.$admin.'</td><td><a href="../Php/index.php?ex=adm&ex2=pan4&id_vet='.$val_vet['ID_VETERINAIRE'].'">Détails</a></td></tr>';
+                $chek_visible = ((isset($_GET['id_vet']) && $val_vet['IS_VISIBLE'] == true)) ? 'checked' : '';
+                $chek_admin = ((isset($_GET['id_vet']) && $val_vet['IS_ADMIN'] == true)) ? 'checked' : '';
         }
         
         if(!isset($_GET['id_vet'])) {
@@ -656,7 +657,7 @@ echo <<< HERE
                            <div class="medium-4 cell">
                              Membre de l'équipe médicale :
                              <div class="switch large">
-                                <input class="switch-input" id="visible" type="checkbox" name="visible">
+                                <input class="switch-input" id="visible" type="checkbox" name="visible" $chek_visible />
                                 <label class="switch-paddle" for="visible">
                                   <span class="show-for-sr">Membre équipe</span>
                                   <span class="switch-active" aria-hidden="true">Oui</span>
@@ -667,7 +668,7 @@ echo <<< HERE
                            <div class="medium-4 cell">
                              Droits administrateur :
                              <div class="switch large">
-                                <input class="switch-input" id="admin" type="checkbox" name="admin">
+                                <input class="switch-input" id="admin" type="checkbox" name="admin" $chek_admin />
                                 <label class="switch-paddle" for="admin">
                                   <span class="show-for-sr">Administrateur</span>
                                   <span class="switch-active" aria-hidden="true">Oui</span>
