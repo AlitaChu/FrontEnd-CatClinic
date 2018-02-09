@@ -254,36 +254,46 @@ HERE;
         }
         
         /* Formulaire d'insertion / modification des clients */
-        $form = '<form action="../Php/index.php?ex='.$action.'" method="post">
+        $form = '<form data-abide novalidate action="../Php/index.php?ex='.$action.'" method="post">
+                        <div data-abide-error class="alert callout" style="display: none;">
+                          <p><i class="fi-alert"></i> Il y a des erreurs dans votre formulaire, veuillez vérifier et corriger.</p>
+                        </div>
                         <div class="grid-x grid-padding-x">
                           <div class="medium-4 cell">
                             <label for="nom">Nom :</label>
-                            <input type="text" name="nom" id="nom" value="'.$nom.'" placeholder="Nom" />
+                            <input type="text" name="nom" id="nom" value="'.$nom.'" placeholder="Nom" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
+                            <span class="form-error">Champ incorrect.</span>
                           </div>
                           <div class="medium-4 cell">
                             <label for="prenom">Prénom :</label>
-                            <input type="text" name="prenom" id="prenom" value="'.$prenom.'" placeholder="Prénom" />
+                            <input type="text" name="prenom" id="prenom" value="'.$prenom.'" placeholder="Prénom" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
+                            <span class="form-error">Champ incorrect.</span>
                           </div> 
                           <div class="medium-4 cell">
                             <label for="email">EMail :</label>
-                            <input type="text" name="email" id="email" value="'.$email.'" placeholder="Email" />
+                            <input type="text" name="email" id="email" value="'.$email.'" placeholder="Email" required pattern="email"/>
+                            <span class="form-error">Champ incorrect.</span>
                           </div>
                           <div class="medium-8 cell">
                             <label for="adresse">Adresse :</label>
-                            <input type="text" name="adresse" id="adresse" value="'.$adresse.'" placeholder="Adresse" />
+                            <input type="text" name="adresse" id="adresse" value="'.$adresse.'" placeholder="Adresse" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-]{1,99999})$"/>
+                            <span class="form-error">Champ incorrect.</span>
                           </div>
                           <div class="medium-4 cell">
                             <label for="telephone">Téléphone :</label>
-                            <input type="text" name="telephone" id="telephone" value="'.$tel.'" placeholder="Téléphone" />
+                            <input type="text" name="telephone" id="telephone" value="'.$tel.'" placeholder="Téléphone" required pattern="number"/>
+                            <span class="form-error">Champ incorrect.</span>
                           </div> 
                           <div class="medium-4 cell">
                             <label>Mot de passe :</label>
-                            <input type="password" name="passwd1" id="passwd1" placeholder="Mot de passe"/>
-                            <input type="hidden" value="'.$arg.'" name="arg" />
+                            <input type="password" name="passwd1" id="passwd1" placeholder="Mot de passe" required/>
+                            <input type="hidden" value="'.$arg.'" name="arg" required pattern="alpha"/>
+                            <span class="form-error">Vous devez renseigner ce champ.</span>
                           </div>
                           <div class="medium-4 cell">
                             <label>Retapez le mot de passe :</label>
-                            <input type="password" name="passwd2" id="passwd2" placeholder="Retaper le mot de passe"/>
+                            <input type="password" name="passwd2" id="passwd2" placeholder="Retaper le mot de passe" required pattern="alpha_numeric" data-equalto="passwd1"/>
+                            <span class="form-error">Les deux champs doivent correspondre.</span>
                           </div>
                           <div class="medium-12 cell">
                             '.$button.'
