@@ -47,7 +47,7 @@ class VAdmin
             $titre = $_data[0]['TITRE_ARTICLE'];
             $contenu = $_data[0]['DESCRIPTION'];
             $modif = 'Modifier l\'article : <em>(Dernière modification le '.$_data[0]['DAY'].'/'.$_data[0]['MONTH'].'/'.$_data[0]['YEAR'].')</em>';
-            $button = '<input class="button" type="submit" value="Modifier l\'article" /><p><a class="warning button" href="../Php/index.php?ex=del">Supprimer l\'article</a></p>';
+            $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Modifier l\'article" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="alert button" href="../Php/index.php?ex=del">Supprimer l\'article</a></p></div></div>';
             $action = 'mod';
         }
         
@@ -85,7 +85,7 @@ echo <<< HERE
                   <div class="tabs-content" data-tabs-content="example-tabs">
                     <div class="tabs-panel is-active" id="panel1v">
                       <h3>Général : Bienvenue dans votre espace d'administration!</h3>
-                      <p>Ici vous pouvez gérer (modifier, supprimer) les articles parus sur votre site en sélectionnant une catégorie ci-dessous, ou ajouter un nouvel article.</p>
+                      <p>Ici vous pouvez gérer (modifier, supprimer) les articles parus sur votre site en les sélectionnant dans les catégories ci-dessous, ou ajouter un nouvel article.</p>
                       $view
                       <hr/>
 
@@ -164,7 +164,7 @@ HERE;
             if (!isset($_GET['form'])) {
                 unset($_SESSION['adm']['id_rep']);
                 $titre = '<p><a href="../Php/index.php? ex=adm&ex2=pan2&form=true" class="button">Ajouter un nouveau client</a></p>
-                          <h3>Liste des clients :</h3>';
+                          <h4 class="h5">Liste des clients :</h4>';
                 $tr = '<table>
                         <thead>
                           <tr>
@@ -214,8 +214,9 @@ echo <<< HERE
                 </div>
                 <div class="medium-9 cell">
                   <div class="tabs-content" data-tabs-content="example-tabs">
-
                     <div class="tabs-panel is-active" id="panel1v">
+                      <h3>Gestion Clientèle / Animaux</h3>
+                      <p>Ici vous pouvez gérer les informations relatives à la clientèle, ainsi qu'aux animaux.</p>
                       <p>$titre</p>
                       $view 
                     </div>
@@ -370,7 +371,7 @@ HERE;
             if (!isset($_GET['form'])) {
                 unset($_SESSION['adm']['id_rep']);
                 $titre = '<p><a href="../Php/index.php? ex=adm&ex2=pan3&form=true" class="button">Nouvelle consultation</a></p>
-                          <h3>Tableau des consultations :</h3>';
+                          <h4 class="h5">Tableau des consultations :</h4>';
                 $tr = '<table>
                           <thead>
                               <tr>
@@ -378,7 +379,7 @@ HERE;
                                   <th width="100">Animal</th>
                                   <th width="80">Espèce</th>
                                   <th width="50">Sexe</th><th>Propriétaire</th>
-                                  <th>Motif consultation</th><th>Compte-rendu et soins</th><th>Actes..</th>
+                                  <th>Motif consultation</th><th>Compte-rendu et soins</th><th>Détails actes</th>
                               </tr>
                           </thead>
                           <tbody>';
@@ -424,6 +425,8 @@ echo <<< HERE
                 <div class="medium-9 columns">
                   <div class="tabs-content" data-tabs-content="example-tabs">
                     <div class="tabs-panel is-active" id="panel1v">
+                      <h3>Consultations et détails Facturation</h3>
+                      <p>Ici vous pouvez gérer l'ensemble des consultations, en ajouter de nouvelles, modifier les informations ou les supprimer, ainsi que les actes facturés.</p>
                       <p>$titre</p>
                       $view  
                     </div>
@@ -572,10 +575,10 @@ HERE;
             $email = '';
             $fonction = '';
             $img_alt = '';
-            $titre = 'Ajouter nouveau membre / administrateur :';
+            $titre = 'Ajouter nouveau Membre d\'équipe / Administrateur :';
             $button = '<input class="button" type="submit" value="Ajouter" />';
             $action = 'ins';
-            $view = '<hr /><h3>Gestion des membres de l\'équipe et Administrateurs</h3>
+            $view = '<hr /><h4 class="h5">Liste des membres de l\'équipe et Administrateurs :</h4>
                       <table>
                         <thead>
                           <tr>
@@ -597,7 +600,7 @@ HERE;
             $email = $_data[0]['EMAIL'];
             $fonction = $_data[0]['EMAIL'];
             $img_alt = $_data[0]['EMAIL'];
-            $titre = 'titre mod';
+            $titre = '<p><a href="../Php/index.php?ex=adm&ex2=pan4"><< Retour</a> | Informations personnelles (vous pouvez les modifier, ou les supprimer)</p>';
             $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="alert button" href="../Php/index.php?ex=del">Supprimer membre / administrateur</a></p></div></div>';
             $action = 'mod';
             $view = '';
@@ -625,9 +628,10 @@ echo <<< HERE
                 </div>
                 <div class="medium-9 columns">
                   <div class="tabs-content" data-tabs-content="example-tabs">
-
                     <div class="tabs-panel is-active" id="panel1v">
-                      <h3>$titre</h3>
+                      <h3>Gestion Equipe / Administrateurs</h3>
+                      <p>Ici vous pouvez gérer les membres de l'équipe médicale, les informations visibles sur le site, et déterminer les droits concernant l'administration du site.</p>
+                      <p>$titre</p>
                       <form action="../Php/index.php?ex=$action" method="post">
                           <div class="grid-x grid-padding-x">
                             <div class="medium-4 cell">
@@ -643,8 +647,9 @@ echo <<< HERE
                               <input type="text" name="email" id="email" value="$email" placeholder="Email" />
                             </div>
                             <div class="medium-4 cell">
-                              <label for="img_veto">Photo :</label>
-                              <input type="fichier" name="img_veto" id="img_veto" placeholder="Photo" />
+                              <label for="image">Photo</label>
+                              <input type="hidden" name="fichier_old" value="" />
+                              <input id="image" type="file" name="image" size="150" />
                             </div>
                             <div class="medium-8 cell">
                               <label for="img_alt">Description de la photo :</label>
