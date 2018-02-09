@@ -24,9 +24,10 @@ class VAdmin
             foreach ($_data as $val_art) {
                 $list_art .= '<li><a href="../Php/index.php?ex=adm&id_cat='.$val_art['ID_CATEGORIE'].'&id_art='.$val_art['ID_ARTICLE'].'">'.$val_art['TITRE_ARTICLE'].'</a></li>';
             }
-            $cat = isset($_data[0]['TITRE_CATEGORIE']) ? ' | '.$_data[0]['TITRE_CATEGORIE'].' :' : '';
+            $nom_cat = isset($_data[0]['TITRE_CATEGORIE']) ? ' | '.$_data[0]['TITRE_CATEGORIE'].' :' : '';
             $list_art .= '</ul>';
-            $view = '<p><a href="../Php/index.php?ex=adm"><< Retour</a>'.$cat.'</p>';
+            $cat = isset($_GET['id_art'])? '&id_cat='.$_data[0]['ID_CATEGORIE'] : '';
+            $view = '<p><a href="../Php/index.php?ex=adm'.$cat.'"><< Retour</a>'.$nom_cat.'</p>';
             $view .= $list_art;
         }
         
@@ -255,29 +256,29 @@ HERE;
         $form = '<form action="../Php/index.php?ex='.$action.'" method="post">
                         <div class="grid-x grid-padding-x">
                           <div class="medium-4 cell">
-                            <label>Nom :</label>
+                            <label for="nom">Nom :</label>
                             <input type="text" name="nom" id="nom" value="'.$nom.'" placeholder="Nom" />
                           </div>
                           <div class="medium-4 cell">
-                            <label>Prénom :</label>
+                            <label for="prenom">Prénom :</label>
                             <input type="text" name="prenom" id="prenom" value="'.$prenom.'" placeholder="Prénom" />
                           </div> 
                           <div class="medium-4 cell">
-                            <label>EMail :</label>
+                            <label for="email">EMail :</label>
                             <input type="text" name="email" id="email" value="'.$email.'" placeholder="Email" />
                           </div>
                           <div class="medium-8 cell">
-                            <label>Adresse :</label>
-                            <input type="text" name="adresse" id="adresse" placeholder="Adresse" />
+                            <label for="adresse">Adresse :</label>
+                            <input type="text" name="adresse" id="adresse" value="'.$adresse.'" placeholder="Adresse" />
                           </div>
                           <div class="medium-4 cell">
-                            <label>Téléphone :</label>
-                            <input type="text" name="telephone" id="telephone" placeholder="Téléphone" />
+                            <label for="telephone">Téléphone :</label>
+                            <input type="text" name="telephone" id="telephone" value="'.$tel.'" placeholder="Téléphone" />
                           </div> 
                           <div class="medium-4 cell">
                             <label>Mot de passe :</label>
                             <input type="password" name="passwd1" id="passwd1" placeholder="Mot de passe"/>
-                            <input type="hidden" value="$arg" name="arg" />
+                            <input type="hidden" value="'.$arg.'" name="arg" />
                           </div>
                           <div class="medium-4 cell">
                             <label>Retapez le mot de passe :</label>
@@ -315,21 +316,46 @@ HERE;
             }
             $ls_anim .= '</tbody></table>';
             
+            if(!$animaux) {
+                $ls_anim = '<p class="text-center">Aucun animal n\'est enregistré sur ce compte.</p>';
+            }
+            
             $form .= '<hr />
-                      <form action="../Php/index.php?ex=ins&ex2=pan2&id_cli='.$_data[0]['ID_CLIENT'].'" method="post">
+                      <form action="../Php/index.php?ex=ins" method="post">
                         <div class="grid-x grid-padding-x">
                           <div class="large-12 medium-12 cell">
                           <h3>Animaux enregistrés :</h3>
                             '.$ls_anim.'
+                          <h3>Ajouter un animal :</h3>
                           </div>
-                          <div class="large-6 medium-6 cell">
-                            <label for="actes">Ajouter un acte :</label>
+                          <div class="large-4 medium-4 cell">
+                            <label for="nom_animal">Nom de l\'animal</label>
+                            <input type="text" name="nom_animal" id="nom_animal" placeholder="Nom de l\'animal" />
                           </div>
-                          <div class="large-2 medium-2 cell">
+                          <div class="large-4 medium-4 cell">
+                            <label for="espece">Espece</label>
+                            <input type="text" name="espece" id="espece" placeholder="ex: Chat, Tigre, Lynx..." />
+                          </div>
+                          <div class="large-4 medium-4 cell">
+                            <label for="race">Race de l\'animal</label>
+                            <input type="text" name="race" id="race" placeholder="Race de l\'animal" />
+                          </div>
+                          <div class="large-4 medium-4 cell">
+                            <label>Sexe de l\'animal</label>
+                            <input type="radio" name="sexe" value="M" id="male">
+                            <label for="male">Mâle</label>
+                            <input type="radio" name="sexe" value="F" id="femelle">
+                            <label for="femelle">Femelle</label>
+                          </div>
+                          <div class="large-4 medium-4 cell">
+                            <label for="date_naiss">Né(e) le</label>
+                            <input type="date" name="date_naiss" id="date_naiss">
+                          </div>
+                          <div class="large-12 medium-12 cell">
+                          <input type="hidden" value="'.$arg.'" name="arg" />
                             <br /><input type="submit" class="button" value="Ajouter" />
                           </div>
                         </div>
-                        <input type="hidden" value="'.$arg.'" name="arg" />
                         </form>';
         }
         
@@ -523,6 +549,7 @@ HERE;
     
     public function showAdmAdmin($_data)
     {
+        //debug($_data);
         /* Code html (vue) de la sous-section 'administration : gestion des administrateurs' ---> */
         $arg = 'admi';
         $_SESSION['adm']['arg'] = $arg;
@@ -534,9 +561,46 @@ HERE;
             
                 $tr .= '<tr><td>'.$val_vet['NOM'].'</td><td>'.$val_vet['PRENOM'].'</td><td>'.$val_vet['EMAIL'].'</td><td>'.$val_vet['FONCTION'].'</td>
                 <td>'.$equipe.'</td>
-                <td>'.$admin.'</td><td><a href="../Php/index.php?ex=adm&ex2=pan2&id_cli='.$val_vet['ID_VETERINAIRE'].'">Détails</a></td></tr>';
+                <td>'.$admin.'</td><td><a href="../Php/index.php?ex=adm&ex2=pan4&id_vet='.$val_vet['ID_VETERINAIRE'].'">Détails</a></td></tr>';
         }
         
+        if(!isset($_GET['id_vet'])) {
+            unset($_SESSION['adm']['id_rep']);
+            $nom = '';
+            $prenom = '';
+            $email = '';
+            $fonction = '';
+            $img_alt = '';
+            $titre = 'Ajouter nouveau membre / administrateur :';
+            $button = '<input class="button" type="submit" value="Ajouter" />';
+            $action = 'ins';
+            $view = '<hr /><h3>Gestion des membres de l\'équipe et Administrateurs</h3>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th width="120">Nom</th>
+                            <th width="120">Prénom</th>
+                            <th width="120">Email</th>
+                            <th width="100">Fonction</th>
+                            <th width="100">Membre de l\'équipe</th>
+                            <th width="100">Administrateur</th>
+                            <th>Ajout et détails compte</th>
+                          </tr>
+                        </thead>
+                        <tbody>'.$tr.'</tbody>
+                      </table>';
+        } else {
+            $_SESSION['adm']['id_rep'] = $_GET['id_vet'];
+            $nom = $_data[0]['NOM'];
+            $prenom = $_data[0]['PRENOM'];
+            $email = $_data[0]['EMAIL'];
+            $fonction = $_data[0]['EMAIL'];
+            $img_alt = $_data[0]['EMAIL'];
+            $titre = 'titre mod';
+            $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="alert button" href="../Php/index.php?ex=del">Supprimer membre / administrateur</a></p></div></div>';
+            $action = 'mod';
+            $view = '';
+        }
 
 echo <<< HERE
 <div class="white callout">
@@ -562,23 +626,70 @@ echo <<< HERE
                   <div class="tabs-content" data-tabs-content="example-tabs">
 
                     <div class="tabs-panel is-active" id="panel1v">
-                      <h3>Gestion des administrateurs</h3>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th width="120">Nom</th>
-                            <th width="120">Prénom</th>
-                            <th width="120">Email</th>
-                            <th width="100">Fonction</th>
-                            <th width="100">Membre de l'équipe</th>
-                            <th width="100">Administrateur</th>
-                            <th>Ajout et détails compte</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          $tr  
-                        </tbody>
-                      </table>
+                      <h3>$titre</h3>
+                      <form action="../Php/index.php?ex=$action" method="post">
+                          <div class="grid-x grid-padding-x">
+                            <div class="medium-4 cell">
+                              <label for="nom">Nom :</label>
+                              <input type="text" name="nom" id="nom" value="$nom" placeholder="Nom" />
+                            </div>
+                            <div class="medium-4 cell">
+                              <label for="prenom">Prénom :</label>
+                              <input type="text" name="prenom" id="prenom" value="$prenom" placeholder="Prénom" />
+                            </div> 
+                            <div class="medium-4 cell">
+                              <label for="email">EMail :</label>
+                              <input type="text" name="email" id="email" value="$email" placeholder="Email" />
+                            </div>
+                            <div class="medium-4 cell">
+                              <label for="img_veto">Photo :</label>
+                              <input type="fichier" name="img_veto" id="img_veto" placeholder="Photo" />
+                            </div>
+                            <div class="medium-8 cell">
+                              <label for="img_alt">Description de la photo :</label>
+                              <input type="text" name="img_alt" id="img_alt" value="$img_alt" placeholder= />
+                            </div>
+                            <div class="medium-4 cell">
+                              <label for="fonction">Fonction :</label>
+                              <input type="text" name="fonction" id="fonction" value="$fonction" placeholder="Fonction" />
+                            </div>
+                           <div class="medium-4 cell">
+                             Membre de l'équipe médicale :
+                             <div class="switch large">
+                                <input class="switch-input" id="visible" type="checkbox" name="visible">
+                                <label class="switch-paddle" for="visible">
+                                  <span class="show-for-sr">Membre équipe</span>
+                                  <span class="switch-active" aria-hidden="true">Oui</span>
+                                  <span class="switch-inactive" aria-hidden="true">Non</span>
+                                </label>
+                              </div>
+                           </div> 
+                           <div class="medium-4 cell">
+                             Droits administrateur :
+                             <div class="switch large">
+                                <input class="switch-input" id="admin" type="checkbox" name="admin">
+                                <label class="switch-paddle" for="admin">
+                                  <span class="show-for-sr">Administrateur</span>
+                                  <span class="switch-active" aria-hidden="true">Oui</span>
+                                  <span class="switch-inactive" aria-hidden="true">Non</span>
+                                </label>
+                              </div>
+                           </div> 
+                           <div class="medium-4 cell">
+                             <label>Mot de passe :</label>
+                             <input type="password" name="passwd1" id="passwd1" placeholder="Mot de passe"/>
+                             <input type="hidden" value="$arg" name="arg" />
+                           </div>
+                           <div class="medium-4 cell">
+                             <label>Retapez le mot de passe :</label>
+                              <input type="password" name="passwd2" id="passwd2" placeholder="Retaper le mot de passe"/>
+                            </div>
+                            <div class="medium-12 cell">
+                             $button
+                            </div>
+                          </div>          
+                        </form>
+                      $view
                     </div>
                   </div>
                 </div>
