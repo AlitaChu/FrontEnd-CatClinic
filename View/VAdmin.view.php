@@ -508,6 +508,7 @@ HERE;
                   </div>
                   <label for="motif">Motif de la consultation, description des symptômes</label>
                   <input type="text" name="motif" id="motif" placeholder="Motif, description" value="'.$motif.'" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
+                  <span class="form-error">Champ incorrect.</span>
                   <label for="soins">Compte-rendu de la consultation et/ou suivi des soins</label>
                   <textarea name="soins" id="soins" placeholder="Compte-rendu, suivi et soins" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$">'.$soins.'</textarea>
                   <input type="hidden" value="'.$arg.'" name="arg" />
@@ -569,7 +570,6 @@ HERE;
     
     public function showAdmAdmin($_data)
     {
-        //debug($_data);
         /* Code html (vue) de la sous-section 'administration : gestion des administrateurs' ---> */
         $arg = 'admi';
         $_SESSION['adm']['arg'] = $arg;
@@ -578,9 +578,14 @@ HERE;
         foreach ($_data as $val_vet) {
                 $equipe = ($val_vet['IS_VISIBLE'] == true)? 'OUI' : 'NON';
                 $admin = ($val_vet['IS_ADMIN'] == true)? 'OUI' : 'NON';
-                $tr .= '<tr><td>'.$val_vet['NOM'].'</td><td>'.$val_vet['PRENOM'].'</td><td>'.$val_vet['EMAIL'].'</td><td>'.$val_vet['FONCTION'].'</td>
-                <td>'.$equipe.'</td>
-                <td>'.$admin.'</td><td><a href="../Php/index.php?ex=adm&ex2=pan4&id_vet='.$val_vet['ID_VETERINAIRE'].'">Détails</a></td></tr>';
+                $tr .= '<tr><td>'.$val_vet['NOM'].'</td>
+                          <td>'.$val_vet['PRENOM'].'</td>
+                          <td>'.$val_vet['EMAIL'].'</td>
+                          <td>'.$val_vet['FONCTION'].'</td>
+                          <td>'.$equipe.'</td>
+                          <td>'.$admin.'</td>
+                          <td><a href="../Php/index.php?ex=adm&ex2=pan4&id_vet='.$val_vet['ID_VETERINAIRE'].'">Détails</a></td>
+                        </tr>';
                 $chek_visible = ((isset($_GET['id_vet']) && $val_vet['IS_VISIBLE'] == true)) ? 'checked' : '';
                 $chek_admin = ((isset($_GET['id_vet']) && $val_vet['IS_ADMIN'] == true)) ? 'checked' : '';
         }
@@ -618,7 +623,14 @@ HERE;
             $fonction = $_data[0]['EMAIL'];
             $img_alt = $_data[0]['EMAIL'];
             $titre = '<p><a href="../Php/index.php?ex=adm&ex2=pan4"><< Retour</a> | Informations personnelles (vous pouvez les modifier, ou les supprimer)</p>';
-            $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="alert button" href="../Php/index.php?ex=del">Supprimer membre / administrateur</a></p></div></div>';
+            $button = '<div class="grid-x grid-padding-x">
+                         <div class="large-8 small-6 cell">
+                           <input class="button" type="submit" value="Mettre à jour les données" />
+                         </div>
+                         <div class="large-4 small-6 cell">
+                           <p class="text-right"><a class="alert button" href="../Php/index.php?ex=del">Supprimer membre / administrateur</a></p>
+                         </div>
+                       </div>';
             $action = 'mod';
             $view = '';
         }
@@ -649,43 +661,62 @@ echo <<< HERE
                       <h3>Gestion Equipe / Administrateurs</h3>
                       <p>Ici vous pouvez gérer les membres de l'équipe médicale, les informations visibles sur le site, et déterminer les droits concernant l'administration du site.</p>
                       <p>$titre</p>
-                      <form action="../Php/index.php?ex=$action" method="post">
-                          <div class="grid-x grid-padding-x">
-                            <div class="medium-4 cell">
-                              <label for="nom">Nom :</label>
-                              <input type="text" name="nom" id="nom" value="$nom" placeholder="Nom" />
-                            </div>
-                            <div class="medium-4 cell">
-                              <label for="prenom">Prénom :</label>
-                              <input type="text" name="prenom" id="prenom" value="$prenom" placeholder="Prénom" />
-                            </div> 
-                            <div class="medium-4 cell">
-                              <label for="email">EMail :</label>
-                              <input type="text" name="email" id="email" value="$email" placeholder="Email" />
-                            </div>
-                            <div class="medium-4 cell">
-                              <label for="image">Photo</label>
-                              <input type="hidden" name="fichier_old" value="" />
-                              <input id="image" type="file" name="image" size="150" />
-                            </div>
-                            <div class="medium-8 cell">
-                              <label for="img_alt">Description de la photo :</label>
-                              <input type="text" name="img_alt" id="img_alt" value="$img_alt" placeholder= />
-                            </div>
-                            <div class="medium-4 cell">
-                              <label for="fonction">Fonction :</label>
-                              <input type="text" name="fonction" id="fonction" value="$fonction" placeholder="Fonction" />
-                            </div>
-                           <div class="medium-4 cell">
-                             Membre de l'équipe médicale :
-                             <div class="switch large">
-                                <input class="switch-input" id="visible" type="checkbox" name="visible" $chek_visible />
-                                <label class="switch-paddle" for="visible">
-                                  <span class="show-for-sr">Membre équipe</span>
-                                  <span class="switch-active" aria-hidden="true">Oui</span>
-                                  <span class="switch-inactive" aria-hidden="true">Non</span>
-                                </label>
-                              </div>
+                      
+                      <form data-abide novalidate action="../Php/index.php?ex=$action" method="post">
+                        <div data-abide-error class="alert callout" style="display: none;">
+                          <p><i class="fi-alert"></i> Il y a des erreurs dans votre formulaire, veuillez vérifier et corriger.</p>
+                        </div>
+                        <div class="grid-x grid-padding-x">
+                          <div class="medium-4 cell">
+                            <label for="nom">Nom :</label>
+                            <input type="text" name="nom" id="nom" value="$nom" placeholder="Nom" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
+                            <span class="form-error">
+                              Champ incorrect.
+                            </span>
+                          </div>
+                          <div class="medium-4 cell">
+                            <label for="prenom">Prénom :</label>
+                            <input type="text" name="prenom" id="prenom" value="$prenom" placeholder="Prénom" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
+                            <span class="form-error">
+                              Champ incorrect.
+                            </span>
+                          </div> 
+                          <div class="medium-4 cell">
+                            <label for="email">EMail :</label>
+                            <input type="text" name="email" id="email" value="$email" placeholder="Email" required pattern="email"/>
+                            <span class="form-error">
+                              Champ incorrect.
+                            </span>
+                          </div>
+                          <div class="medium-4 cell">
+                            <label for="image">Photo</label>
+                            <input type="hidden" name="fichier_old" value="" />
+                            <input id="image" type="file" name="image" size="150" />
+                          </div>
+                          <div class="medium-8 cell">
+                            <label for="img_alt">Description de la photo :</label>
+                            <input type="text" name="img_alt" id="img_alt" value="$img_alt" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$" />
+                            <span class="form-error">
+                              Champ incorrect.
+                            </span>
+                          </div>
+                          <div class="medium-4 cell">
+                            <label for="fonction">Fonction :</label>
+                            <input type="text" name="fonction" id="fonction" value="$fonction" placeholder="Fonction" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
+                            <span class="form-error">
+                              Champ incorrect.
+                            </span>
+                          </div>
+                          <div class="medium-4 cell">
+                            Membre de l'équipe médicale :
+                            <div class="switch large">
+                              <input class="switch-input" id="visible" type="checkbox" name="visible" $chek_visible />
+                              <label class="switch-paddle" for="visible">
+                                <span class="show-for-sr">Membre équipe</span>
+                                <span class="switch-active" aria-hidden="true">Oui</span>
+                                <span class="switch-inactive" aria-hidden="true">Non</span>
+                              </label>
+                             </div>
                            </div> 
                            <div class="medium-4 cell">
                              Droits administrateur :
@@ -700,25 +731,31 @@ echo <<< HERE
                            </div> 
                            <div class="medium-4 cell">
                              <label>Mot de passe :</label>
-                             <input type="password" name="passwd1" id="passwd1" placeholder="Mot de passe"/>
-                             <input type="hidden" value="$arg" name="arg" />
+                             <input type="password" name="passwd1" id="passwd1" placeholder="Mot de passe" required pattern="([a-zA-Z0-9\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
+                             <input type="hidden" value="$arg" name="arg"/>
+                             <span class="form-error">
+                              Champ incorrect.
+                            </span>
                            </div>
                            <div class="medium-4 cell">
                              <label>Retapez le mot de passe :</label>
-                              <input type="password" name="passwd2" id="passwd2" placeholder="Retaper le mot de passe"/>
-                            </div>
-                            <div class="medium-12 cell">
+                             <input type="password" name="passwd2" id="passwd2" placeholder="Retaper le mot de passe" required pattern="([a-zA-Z0_9\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$" data-equalto="passwd1"/>
+                             <span class="form-error">
+                               Les deux mots de passe doivent correspondre.
+                             </span>
+                           </div>
+                           <div class="medium-12 cell">
                              $button
-                            </div>
-                          </div>          
-                        </form>
-                      $view
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                           </div>
+                         </div>          
+                       </form>
+                     $view
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
 HERE;
      
     }
