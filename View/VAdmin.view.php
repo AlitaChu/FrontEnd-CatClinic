@@ -479,36 +479,40 @@ HERE;
             $button = '<div class="grid-x grid-padding-x"><div class="large-8 small-6 cell"><input class="button" type="submit" value="Mettre à jour les données" /></div> <div class="large-4 small-6 cell"><p class="text-right"><a class="alert button" href="../Php/index.php?ex=del">Supprimer la consultation</a></p></div></div>';
             $action = 'mod';
         } else {
-            $animal = '<label for="animal">Animal</label><select name="animal">'.$ani_opt.'</select>';
+            $animal = '<label for="animal">Animal</label><select id="select" required name="animal"><option value="">Sélectionnez un animal ...</option>'.$ani_opt.'</select>';
             $poids = '';
             $motif = '';
             $soins = '';
-            $date = '<label for="date_cons">Date de la consultation</label><input type="date" name="date_cons" id="date_cons" />';
+            $date = '<label for="date_cons">Date de la consultation</label><input type="date" name="date_cons" id="date_cons" required pattern="date"/><span class="form-error">Champ incorrect.</span>';
             $button = '<input class="button" type="submit" value="Enregistrer la consultation" />';
             $action = 'ins';
         }
         
         /* Formulaire d'insertion / modification des consultations */
-        $form = '<form action="../Php/index.php?ex='.$action.'" method="post">  
-                        <div class="grid-x grid-padding-x">
-                          <div class="large-4 medium-4 cell">
-                            '.$animal.'
-                          </div>
-                          <div class="large-4 medium-4 cell">
-                            <label for="poids">Poids (kg)</label>
-                            <input type="text" name="poids" id="poids" value="'.$poids.'" />
-                          </div>
-                          <div class="large-4 medium-4 cell">
-                            '.$date.'
-                          </div>
-                        </div>
-                        <label for="motif">Motif de la consultation, description des symptômes</label>
-                        <input type="text" name="motif" id="motif" placeholder="Motif, description" value="'.$motif.'" />
-                        <label for="soins">Compte-rendu de la consultation et/ou suivi des soins</label>
-                        <textarea name="soins" id="soins" placeholder="Compte-rendu, suivi et soins">'.$soins.'</textarea>
-                        <input type="hidden" value="'.$arg.'" name="arg" />
-                        '.$button.'
-                      </form>';
+        $form = '<form data-abide novalidate action="../Php/index.php?ex='.$action.'" method="post">
+                  <div data-abide-error class="alert callout" style="display: none;">
+                    <p><i class="fi-alert"></i> Il y a des erreurs dans votre formulaire, veuillez vérifier et corriger.</p>
+                  </div>
+                  <div class="grid-x grid-padding-x">
+                    <div class="large-4 medium-4 cell">
+                      '.$animal.'
+                    </div>
+                    <div class="large-4 medium-4 cell">
+                      <label for="poids">Poids (kg)</label>
+                      <input type="text" name="poids" id="poids" value="'.$poids.'" pattern="number"/>
+                      <span class="form-error">Champ incorrect, vous devez renseigner un nombre.</span>
+                    </div>
+                    <div class="large-4 medium-4 cell">
+                      '.$date.'
+                    </div>
+                  </div>
+                  <label for="motif">Motif de la consultation, description des symptômes</label>
+                  <input type="text" name="motif" id="motif" placeholder="Motif, description" value="'.$motif.'" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$"/>
+                  <label for="soins">Compte-rendu de la consultation et/ou suivi des soins</label>
+                  <textarea name="soins" id="soins" placeholder="Compte-rendu, suivi et soins" required pattern="([a-zA-Z\'àâéèêëôùûçÀÂÉÈÔÙÛÇ-])$">'.$soins.'</textarea>
+                  <input type="hidden" value="'.$arg.'" name="arg" />
+                  '.$button.'
+                </form>';
         
         /* Si $_data, ajout du formulaire d'insertion des actes */  
         if ($_data) {
